@@ -17,12 +17,9 @@ const App = () => {
   </nav>
 
   <div>
-    { loggedIn ? <h2>Hello Member</h2> : ''}
-    </div>
-
-    
+    { loggedIn ? <h2 className='text-center'>Hello, Member</h2> : ''}  
+  </div>    
   </>
-
   )
 }
 
