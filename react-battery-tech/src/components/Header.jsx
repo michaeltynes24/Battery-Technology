@@ -18,7 +18,7 @@ const Header = () => {
   </nav>
 
   <div>
-    { loggedIn ? <h2 className='text-center'>Hello, Member</h2> : '' }  
+    { loggedIn ? <h2 className='text-center mt-5'>Hello, Member</h2> : '' }  
   </div> 
 
   </>
