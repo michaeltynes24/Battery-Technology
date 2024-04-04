@@ -8,14 +8,16 @@ import Optimizer from './pages/Optimizer';
 import Profile from './pages/Profile';
 import Savings from './pages/Savings';
 import NoPage from './pages/NoPage';
+import Layout from './pages/Layout';
 
 
 export default function App() {
   return (   
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Login />}> {/* parent route */}
-        <Route index element={<Home />} /> {/* default for the parent route */}
+      <Route path="/" element={<Layout />}> {/* parent route */}
+        <Route index element ={<Login />} />
+        <Route path= "home" element ={<Home />} /> 
         <Route path="history" element={<History />} />
         <Route path="optimizer" element={<Optimizer />} />
         <Route path="profile" element={<Profile/>} />

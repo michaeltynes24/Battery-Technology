@@ -12,9 +12,10 @@ const Header = () => {
     <>    
 
   <nav class="navbar navbar-light bg-light">
-    <a class="navbar-brand" href="#">
-      <img src="/docs/images/teamLogo.png" width="60" height="30" alt=""></img>
+    <a class="navbar-brand ps-3" href="#">
       {websiteName}</a>
+      <a class="nav-link active" aria-current="page" href="/">Sign Out</a>
+
   </nav>
 
   <div>

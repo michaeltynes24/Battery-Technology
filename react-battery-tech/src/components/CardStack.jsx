@@ -18,18 +18,18 @@ const CardStack = () => {
 
   <div class="row">
     <div class="col-md-6">
-        <Card imgURL = '/node_modules/bootstrap-icons/icons/bar-chart-line-fill.svg' cardName = "Optimizer"/>
+        <Card imgURL = '/node_modules/bootstrap-icons/icons/bar-chart-line-fill.svg' cardName = "Optimizer" path = '/optimizer'/>
     </div>
     <div class="col-md-6">
-        <Card imgURL = '/node_modules/bootstrap-icons/icons/sunset-fill.svg' cardName = "Energy Use History"/>
+        <Card imgURL = '/node_modules/bootstrap-icons/icons/sunset-fill.svg' cardName = "Energy Use History"path = '/history' />
     </div>
   </div>
   <div class="row">
     <div class="col-md-6">
-        <Card imgURL = '/node_modules/bootstrap-icons/icons/person-bounding-box.svg' cardName = "Profile"/>
+        <Card imgURL = '/node_modules/bootstrap-icons/icons/person-bounding-box.svg' cardName = "Profile" path = '/profile' />
     </div>
     <div class="col-md-6">
-        <Card imgURL = '/node_modules/bootstrap-icons/icons/cash-stack.svg'cardName = "Potential Savings"/>
+        <Card imgURL = '/node_modules/bootstrap-icons/icons/cash-stack.svg' cardName = "Potential Savings" path = '/savings' />
     </div>
   </div>
   </div>

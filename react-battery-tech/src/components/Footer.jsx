@@ -10,7 +10,7 @@ const Footer = () => {
     };
     return (
     <>
-    <footer className="bg-light" style = {divStyle}>
+    <footer className="bg-light absolute-bottom" style = {divStyle}>
       <p>Copyright &copy; 2024 VAM2S SolarShine</p>
         <a href="#" className="px-1">Home</a>
         <a href="#" className="px-1">About</a>
