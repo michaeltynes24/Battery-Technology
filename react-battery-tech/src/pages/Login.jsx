@@ -6,7 +6,9 @@ const Login = () => {
   return (
    <>
    <div className = 'container-fluid'>
-   < Link to = '/Home' className = 'btn btn-primary' style = {{textDecoration:'none'}}>Login</Link> 
+   < Link to = '/Home' className = 'btn btn-primary me-3' style = {{textDecoration:'none'}}>Login</Link> 
+   < Link to = '/newUser' className = 'btn btn-primary' style = {{textDecoration:'none'}}>New User</Link> 
+
    </div>
    </>
 

@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import Savings from './pages/Savings';
 import NoPage from './pages/NoPage';
 import Layout from './pages/Layout';
+import NewUser from './pages/NewUser';
 
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="optimizer" element={<Optimizer />} />
         <Route path="profile" element={<Profile/>} />
         <Route path="savings" element={<Savings/>} />
+        <Route path="newUser" element={<NewUser/>} />
         <Route path="*" element={<NoPage/>} /> {/* catches all unidentified routes*/}
       </Route>
     </Routes>
