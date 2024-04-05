@@ -11,6 +11,7 @@ const Card = (props) => {
   <>
 
     <div className="card border-success my-5">
+
     <Link to = {props.path} style = {{textDecoration:'none', color:'#00a552'}}>
         <div className="card-body text-success text-center">
         <h5 className="card-title"></h5>
@@ -18,10 +19,8 @@ const Card = (props) => {
         </div>
       <div className="card-header text-center fw-bold">{props.cardName ? props.cardName : cardName }</div>
     </Link>
-    </div>
     
-
-
+    </div>
 
     </>
 
