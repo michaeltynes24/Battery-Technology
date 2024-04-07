@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const NewUser = () => {
+const NewUser = (props) => {
+    const title = "New User Account";
     const imgURL = "/node_modules/bootstrap-icons/icons/battery-half.svg";
     const customContainer = {
         "max-width": "400px",
@@ -28,7 +29,7 @@ const NewUser = () => {
 
     return (
         <div className="container text-center">
-            <h2 className='border-bottom pb-1'>Account Information</h2>
+            <h2 className='border-bottom pb-1'>{props.title ? props.title : title}</h2>
 
             {/* New User Form */}
             <form>
@@ -140,7 +141,7 @@ const NewUser = () => {
                     </div>
 
                     <Link to='/home'>
-                        <button type="submit" className="btn btn-primary mt-5">Submit</button>
+                        <button type="submit" className="btn btn-primary mt-5">{props.title ? "Save" : "Submit"}</button>
                     </Link>
 
                 </div>

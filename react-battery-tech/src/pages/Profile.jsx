@@ -1,8 +1,11 @@
 import React from 'react';
+import NewUser from './NewUser';
 
 const Profile = () => {
   return (
-    <div>Profile</div>
+    <>
+    <NewUser title = "Account Information"/>
+    </>
   )
 }
 
