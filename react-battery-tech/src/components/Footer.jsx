@@ -1,5 +1,6 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 
 
 const Footer = () => {
@@ -12,11 +13,10 @@ const Footer = () => {
     <>
     <footer className="bg-light absolute-bottom" style = {divStyle}>
       <p>Copyright &copy; 2024 VAM2S SolarShine</p>
-        <a href="#" className="px-1">Home</a>
-        <a href="#" className="px-1">About</a>
-        <a href="#" className="px-1">Team</a>
-        <a href="#" className="px-1">Contact</a>
-
+        <Link to ='/home'className = 'me-3'>Home</Link>
+        <Link to ='/home'className = 'me-3' >About</Link>
+        <Link to ='/home'className = 'me-3'>Team</Link>
+        <Link to ='/home'className = 'me-3'>Contact</Link>
   </footer>
   </>
   )
