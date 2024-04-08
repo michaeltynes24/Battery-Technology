@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, request, jsonify
 from models import db, User
 from flask_cors import CORS
@@ -8,6 +7,14 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+@app.route('/')
+def index():
+    return "Hello, World!"
 
 @app.route('/users', methods=['POST'])
 def create_user():
@@ -35,18 +42,6 @@ def get_user(user_id):
         'email': user.email,
         # Include other fields as necessary
     })
-
-from flask import Flask
-
-app = Flask(__name__)
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-@app.route('/')
-def index():
-    return "Hello, World!"
 
 if __name__ == "__main__":
     app.run(debug=True)
