@@ -46,6 +46,12 @@ const NewUser = (props) => {
                             <label className='mb-2' htmlFor="lastName">Last Name</label>
                             <input type="text" className="form-control" id="lastName" placeholder="Last Name" />
                         </div>
+
+
+                        <div className="form-group mb-2">
+                            <label className='mb-2' htmlFor="username">Username</label>
+                            <input type="text" className="form-control" id="username" placeholder="Username" />
+                        </div>
                     </div>
 
 
@@ -62,7 +68,6 @@ const NewUser = (props) => {
                             <select id="batteryType" className="form-control">
                                 <option selected>Choose...</option>
                                 <option>Lithium-ion</option>
-                                <option>Lead Acid</option>
                                 <option>Sodium-ion</option>
                                 <option>Others</option>
                             </select>
@@ -123,11 +128,11 @@ const NewUser = (props) => {
                     </div>
 
                     <div className="form-row">
-                        <label className='mb-2' htmlFor="batterySize">Battery Size</label><br />
+                        <label className='mb-2' htmlFor="batterySize">Current Battery Size (Slide to 0 if N/A)</label><br />
                         <div className="form-group mb-2 ms-5">
                             <img src={imgURL} alt="" className='w-25 h-25' /> <br />
                             <input type="range" min="0" max="100" value="50" className="slider" id="myRange" />
-                            <p>Value: <span id="sliderValue">50</span></p>
+                            <p>Size in kWh: <span id="sliderValue">50</span></p>
                         </div>
 
                         <div className="form-group mb-2 text-start">
