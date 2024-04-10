@@ -12,7 +12,7 @@ const Footer = () => {
     return (
     <>
     <footer className="bg-light absolute-bottom" style = {divStyle}>
-      <p>Copyright &copy; 2024 VAM2S SolarShine</p>
+      <p>Copyright &copy; 2024 Shine</p>
         <Link to ='/home'className = 'me-3'>Home</Link>
         <Link to ='/home'className = 'me-3' >About</Link>
         <Link to ='/home'className = 'me-3'>Team</Link>

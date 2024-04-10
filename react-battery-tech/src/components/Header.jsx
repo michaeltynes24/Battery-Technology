@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const websiteName = 'VAM2S Solarshine'
+const websiteName = 'Shine'
 const engineers = ['Michael', 'Vishal', 'Alex', 'Steven', 'Maria']
 const loggedIn = true
 
