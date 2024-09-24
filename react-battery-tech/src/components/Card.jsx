@@ -17,7 +17,7 @@ const Card = (props) => {
         <h5 className="card-title"></h5>
         <img src={props.imgURL ? props.imgURL : imgURL} alt="Bootstrap" width="128" height="128"></img>
         </div>
-      <div className="card-header text-center fw-bold">{props.cardName ? props.cardName : cardName }</div>
+      <div className="card-header text-center fw-bold text-dark fs-4">{props.cardName ? props.cardName : cardName }</div>
     </Link>
     
     </div>
