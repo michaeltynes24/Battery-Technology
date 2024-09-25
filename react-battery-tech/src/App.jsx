@@ -10,6 +10,7 @@ import Savings from './pages/Savings';
 import NoPage from './pages/NoPage';
 import Layout from './pages/Layout';
 import NewUser from './pages/NewUser';
+import LandingPage from './pages/LandingPage';
 
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="newUser" element={<NewUser/>} />
         <Route path="*" element={<NoPage/>} /> {/* catches all unidentified routes*/}
       </Route>
+      <Route path= "welcome" element ={<LandingPage />} /> 
     </Routes>
   </BrowserRouter>
 
