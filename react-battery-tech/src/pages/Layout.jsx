@@ -1,19 +1,34 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Outlet } from 'react-router-dom';
 import Footer from '../components/Footer';
+import Grid from '@mui/material/Grid2';
+import { Box } from '@mui/material';
+import Header from '../components/Header';
 
 const Layout = () => {
   return (
     <>
-    {/* Head Logo */}
-    <div className="text-center">
-        <img src="../../docs/images/teamLogo.png" className="img-fluid py-2 border border-3 rounded-4 border-dark my-2" alt='' />
-    </div>
-    
-    <Outlet />
+      
+      <Grid container sx = {{backgroundColor:'transparent', width:'100%', minHeight:'120vh'}}>
 
-    <Footer />
+      {/* //container for the header */}
+                <Box sx ={{maxHeight:'20px', width:'100%'}}>
+                    <Header/>
+                </Box>
+    {/* //container for rest of the content */}
+            <Grid size = {12} sx = {{backgroundColor:'transparent', minHeight:'80vh',paddingX:{xs:'10%',md:'20%'}}}>
+                <Box sx = {{width:'100%', height:'100%',backgroundColor:'transparent'}}>
+                    <Outlet />
+                </Box>
+            </Grid>
+        
+        <Footer />
+        </Grid>
+
+        
+
+
+
 
 
 

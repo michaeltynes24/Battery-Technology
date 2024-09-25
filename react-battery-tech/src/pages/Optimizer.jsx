@@ -10,7 +10,8 @@ const Optimizer = () => {
 
   return (
     <>
-    <div className = 'container text-center'>
+    <p>optimizer</p>
+    {/* <div className = 'container text-center'>
       <div className = 'mb-4'>
       <h2 className = 'border-bottom pb-3'>Your Optimized Routine</h2>
         <h4>Charge and Discharge over 24 Hour period</h4>
@@ -28,7 +29,7 @@ const Optimizer = () => {
             <Link to = '/savings'><button className = 'btn btn-primary p-2 px-5'>View Potential Savings With This Schedule</button></Link>
           </div>
       </div>
-    </div>
+    </div> */}
     </>
   )
 }
