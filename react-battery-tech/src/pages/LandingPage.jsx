@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, Typography, Paper } from '@mui/material';
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid2';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SolarPowerIcon from '@mui/icons-material/SolarPower';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -23,7 +23,7 @@ const LandingPage = () => {
           Optimize your energy use, lower your bills, and embrace a greener future with Shine's energy management tools.
         </Typography>
         <Button 
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/')}
           variant="contained" 
           sx={{ marginTop: '32px', backgroundColor: '#ffcc80', color: '#000', fontWeight: 'bold', '&:hover': { backgroundColor: '#ffa726' } }}
         >

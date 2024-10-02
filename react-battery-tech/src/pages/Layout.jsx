@@ -12,7 +12,7 @@ const Layout = () => {
       <Grid container sx = {{backgroundColor:'transparent', width:'100%', minHeight:'120vh'}}>
 
       {/* //container for the header */}
-                <Box sx ={{maxHeight:'20px', width:'100%'}}>
+                <Box sx ={{maxHeight:'80px', width:'100%'}}>
                     <Header/>
                 </Box>
     {/* //container for rest of the content */}
