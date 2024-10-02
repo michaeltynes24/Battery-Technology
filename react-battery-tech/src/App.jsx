@@ -11,6 +11,8 @@ import NoPage from './pages/NoPage';
 import Layout from './pages/Layout';
 import NewUser from './pages/NewUser';
 import LandingPage from './pages/LandingPage';
+import Team from './pages/Team';
+import Contact from './pages/Contact';
 
 
 export default function App() {
@@ -25,6 +27,8 @@ export default function App() {
         <Route path="profile" element={<Profile/>} />
         <Route path="savings" element={<Savings/>} />
         <Route path="newUser" element={<NewUser/>} />
+        <Route path="team" element={<Team/>} />
+        <Route path="contact" element={<Contact/>} />
         <Route path="*" element={<NoPage/>} /> {/* catches all unidentified routes*/}
       </Route>
       <Route path= "welcome" element ={<LandingPage />} /> 

@@ -21,7 +21,7 @@ const Footer = () => {
             </Typography>
           </Link>
 
-          <Link to="/about" style={{ textDecoration: 'none', marginRight: '16px' }}>
+          <Link to="/welcome" style={{ textDecoration: 'none', marginRight: '16px' }}>
             <Typography sx={{ font:'body', color: 'darkgrey', '&:hover': { color: 'orange' }, display: 'inline-block' }}>
               About
             </Typography>

@@ -1,39 +1,56 @@
 import * as React from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Logo from '../../docs/images/teamLogo.png';
-import  Grid  from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid2';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 const Header = () => {
+  const location = useLocation();
+
   return (
-    <>  
-      {/* <Box sx={{ flexGrow: 1, width:'100%', height:'100%', backgroundColor:'orange'}}> */}
-        <AppBar position="static" elevation={1} sx = {{ backgroundColor:'lightgrey', color:'black'}}>
-          <Toolbar sx={{ justifyContent: 'space-between' }}>
-            {/* Left: Name*/}
-            <Grid size ={2}>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Shine
-            </Typography>
+    <>
+      <AppBar position="static" elevation={1} sx={{ backgroundColor: 'lightgrey', color: 'black' }}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          {/* Conditionally render based on current path */}
+          {location.pathname === '/home' ? (
+            // Left: Show Typography "Shine" on /home page
+            <Grid size={5}>
+              <Typography variant="h6" fontSize={15} component="div" sx={{ flexGrow: 1 }}>
+                Shine - Empowering a sustainable future by optimizing the energy of today."
+              </Typography>
             </Grid>
+          ) : (
+            // Left: Show Tabs on other pages
+            <Grid size={5}>
+              <Tabs value={location.pathname}>
+              <Tab label="Home" value="/home" component={Link} to="/home" />
+                <Tab label="Optimizer" value="/optimizer" component={Link} to="/optimizer" />
+                <Tab label="History" value="/history" component={Link} to="/history" />
+                <Tab label="Profile" value="/profile" component={Link} to="/profile" />
+                <Tab label="Savings" value="/savings" component={Link} to="/savings" />
+              </Tabs>
+            </Grid>
+          )}
 
-            {/* Center: Image */}
-            <Grid size ={8}>
+          {/* Center: Image */}
+          <Grid size={2}>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-              <img src={Logo} alt="Logo" style={{ height: '60px',margin:'10px' }} />
+              <img src={Logo} alt="Logo" style={{ height: '60px', margin: '10px' }} />
             </Box>
-            </Grid>
+          </Grid>
 
-            {/* Right: Login Button */}
-            <Grid size ={2} sx = {{justifyContent:'flex-end' , display:'flex'}}>
-                <Button color="inherit">Login</Button>
-            </Grid>
-          </Toolbar>
-        </AppBar>
-      {/* </Box>  */}
+          {/* Right: Login Button */}
+          <Grid size={5} sx={{ justifyContent: 'flex-end', display: 'flex' }}>
+            <Button color="inherit">Login</Button>
+          </Grid>
+        </Toolbar>
+      </AppBar>
     </>
   );
 };

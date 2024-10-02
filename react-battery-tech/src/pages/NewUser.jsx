@@ -1,23 +1,10 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography, Checkbox, FormControlLabel, Slider } from '@mui/material';
 const NewUser = (props) => {
     const title = "New User Account";
-    const imgURL = "/node_modules/bootstrap-icons/icons/battery-half.svg";
-    const customContainer = {
-        "max-width": "400px",
-    };
-    const expandInputStyle = {
-        "max-width": "300px",
-        "display": "block",
-    };
-    const collapseInputStyle = {
-        "max-width": "300px",
-        "display": "none",
-    };
-
     const [showExpandedInput, setShowExpandedInput] = useState(false);
+    const [batterySize, setBatterySize] = useState(50); // State for slider
 
     const expandInputs = (option) => {
         if (option === 'Other') {
@@ -28,131 +15,101 @@ const NewUser = (props) => {
     };
 
     return (
-        <div className="container text-center">
-            <h2 className='border-bottom pb-1'>{props.title ? props.title : title}</h2>
+        <Box sx={{ maxWidth: '80%', mx: 'auto', mt:7, mb:3 }}>
+            <Typography sx = {{justifyContent:'center', display:'flex'}}variant="h4" gutterBottom>{props.title ? props.title : title}</Typography>
 
             {/* New User Form */}
+
             <form>
-                <div className='container' style={customContainer}>
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                    <TextField label="First Name" variant="outlined" fullWidth />
+                </FormControl>
 
-                    <div className="form-row">
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="firstName">First Name</label>
-                            <input type="text" className="form-control" id="firstName" placeholder="First Name" />
-                        </div>
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                    <TextField label="Last Name" variant="outlined" fullWidth />
+                </FormControl>
 
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                    <TextField label="Username" variant="outlined" fullWidth />
+                </FormControl>
 
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="lastName">Last Name</label>
-                            <input type="text" className="form-control" id="lastName" placeholder="Last Name" />
-                        </div>
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                    <TextField label="Email Address" variant="outlined" fullWidth />
+                </FormControl>
 
+                {/* Battery Type Dropdown */}
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                    <InputLabel>Battery Type</InputLabel>
+                    <Select defaultValue="" label="Battery Type">
+                        <MenuItem value="">Choose...</MenuItem>
+                        <MenuItem value="Lithium-ion">Lithium-ion</MenuItem>
+                        <MenuItem value="Sodium-ion">Sodium-ion</MenuItem>
+                        <MenuItem value="Others">Others</MenuItem>
+                    </Select>
+                </FormControl>
 
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="username">Username</label>
-                            <input type="text" className="form-control" id="username" placeholder="Username" />
-                        </div>
-                    </div>
+                {/* Utility Company Dropdown */}
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                    <InputLabel>Utility Company</InputLabel>
+                    <Select defaultValue="" label="Utility Company" onChange={(e) => expandInputs(e.target.value)}>
+                        <MenuItem value="">Choose...</MenuItem>
+                        <MenuItem value="SDGE">SDGE</MenuItem>
+                        <MenuItem value="PGE">PGE</MenuItem>
+                        <MenuItem value="Other">Other (enter utility information manually)</MenuItem>
+                    </Select>
+                </FormControl>
 
+                {/* Import Data Checkbox */}
+                <FormControlLabel
+                    control={<Checkbox />}
+                    label="Would you like to import your energy data? (SDGE & PGE only)"
+                    sx={{ mb: 3 }}
+                />
 
-                    <div className="form-group mb-2">
-                        <label className='mb-2' htmlFor="email">Email Address</label>
-                        <input type="email" className="form-control" id="email" placeholder="Email Address" />
-                    </div>
+                {/* Expanded Inputs */}
+                {showExpandedInput && (
+                    <Box sx={{ mb: 3 }}>
+                        <TextField label="Summer Super Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField label="Summer Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField label="Summer On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField label="Winter Super Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField label="Winter Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField label="Winter On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                    </Box>
+                )}
 
+                {/* Battery Size Slider */}
+                <Box sx={{ mb: 3 }}>
+                    <Typography gutterBottom>Current Battery Size (Slide to 0 if N/A)</Typography>
+                    <Slider
+                    sx={{color:'#ffa726'}}
+                        value={batterySize}
+                        onChange={(e, value) => setBatterySize(value)}
+                        min={0}
+                        max={100}
+                        aria-labelledby="battery-size-slider"
+                        valueLabelDisplay="auto"
+                        
+                    />
+                    <Typography>Size in kWh: {batterySize}</Typography>
+                </Box>
 
+                {/* Solar Checkbox */}
+                <FormControlLabel
+                    control={<Checkbox />}
+                    label="Do you have Solar? (check for yes)"
+                    sx={{ mb: 3 }}
+                />
 
-                    <div className="form-row">
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="batteryType">Battery Type</label>
-                            <select id="batteryType" className="form-control">
-                                <option selected>Choose...</option>
-                                <option>Lithium-ion</option>
-                                <option>Sodium-ion</option>
-                                <option>Others</option>
-                            </select>
-                        </div>
-
-
-
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="utilityCompany">Utility Company</label>
-                            <select id="utilityCompany" className="form-control" onChange={(e) => expandInputs(e.target.value)}>
-                                <option selected>Choose...</option>
-                                <option value="SDGE">SDGE</option>
-                                <option value="PGE">PGE</option>
-                                <option value="Other">Other (enter utility information manually)</option>
-                            </select>
-                        </div>
-
-                        <div className="form-group mb-2 text-start">
-                            <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="importdata" />
-                                <label className="form-check-label" htmlFor="importdata">
-                                    Would you like to import your energy data? (SDGE & PGE only)
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='expandedInputs container' style={showExpandedInput ? expandInputStyle : collapseInputStyle}>
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="summerSuperOffPeak">Summer Super Off Peak price</label>
-                            <input type="text" className="form-control" id="ssofp" placeholder="$" />
-                        </div>
-
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="summerOffPeak">Summer Off peak price</label>
-                            <input type="text" className="form-control" id="sofp" placeholder="$" />
-                        </div>
-
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="summerSuperOffPeak">Summer On Peak price</label>
-                            <input type="text" className="form-control" id="sonp" placeholder="$" />
-                        </div>
-                       
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="summerSuperOffPeak">Winter Super Off Peak price</label>
-                            <input type="text" className="form-control" id="wsofp" placeholder="$" />
-                        </div>                       
-                       
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="summerSuperOffPeak">Winter Off Peak price</label>
-                            <input type="text" className="form-control" id="wofp" placeholder="$" />
-                        </div>
-
-                        <div className="form-group mb-2">
-                            <label className='mb-2' htmlFor="summerSuperOffPeak">Winter On Peak price</label>
-                            <input type="text" className="form-control" id="wonp" placeholder="$" />
-                        </div>
-                    </div>
-
-                    <div className="form-row">
-                        <label className='mb-2' htmlFor="batterySize">Current Battery Size (Slide to 0 if N/A)</label><br />
-                        <div className="form-group mb-2 ms-5">
-                            <img src={imgURL} alt="" className='w-25 h-25' /> <br />
-                            <input type="range" min="0" max="100" value="50" className="slider" id="myRange" />
-                            <p>Size in kWh: <span id="sliderValue">50</span></p>
-                        </div>
-
-                        <div className="form-group mb-2 text-start">
-                            <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="solar" />
-                                <label className="form-check-label" htmlFor="solar">
-                                    Do you have Solar? (check for yes)
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <Link to='/home'>
-                        <button type="submit" className="btn btn-primary mt-5">{props.title ? "Save" : "Submit"}</button>
-                    </Link>
-
-                </div>
+                {/* Submit Button */}
+                <Link to='/home' style={{ textDecoration: 'none' }}>
+                    <Button variant="contained" fullWidth sx={{ mt: 3, backgroundColor:'#ffcc80',  fontWeight: 'bold', '&:hover': { backgroundColor: '#ffa726' } }}>
+                        {props.title ? "Save" : "Submit"}
+                    </Button>
+                </Link>
             </form>
-        </div>
-    )
+        </Box>
+    );
 }
 
 export default NewUser;
