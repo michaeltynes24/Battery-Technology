@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: clerk-sdk-python
+Version: 0.1.0
+Summary: Python SDK for clerk.dev
+Home-page: https://clerk.dev
+License: MIT
+Keywords: clerk,authentication,clerk.dev
+Author: Elijah Wilson
+Author-email: dev.tizz98@gmail.com
+Requires-Python: >=3.8,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: aiohttp[speedups] (>=3.7.3,<4.0.0)
+Requires-Dist: pydantic (>=1.7.3,<2.0.0)
+Project-URL: Repository, https://github.com/tizz98/clerk-sdk-python
+Description-Content-Type: text/markdown
+
+# Unofficial Clerk.dev Python SDK
+
+## What is Clerk.dev?
+
+See https://clerk.dev
+
+## Installation
+
+`pip install clerk-sdk-python`
+
+## Usage
+
+```python
+import asyncio
+
+from clerk import Client
+
+
+async def main():
+    async with Client("my-token") as client:
+        users = await client.users.list()
+        for user in users:
+            print(f"Got user {user.id} -> {user.first_name} {user.last_name}")
+
+
+asyncio.run(main())
+```
+
