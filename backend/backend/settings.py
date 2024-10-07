@@ -91,10 +91,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'sdei',
+    #'shine',
     'corsheaders',
     'rest_framework',
-    'sdei.apps.SdeiConfig', 
+    'shine.apps.shineConfig', 
     ]
 
 MIDDLEWARE = [
