@@ -9,7 +9,6 @@ Pkg.status()
 using JuMP
 
 using GLPK
-# using Mosek
 using Ipopt
 using CSV
 using DataFrames
