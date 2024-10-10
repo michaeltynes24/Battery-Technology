@@ -91,10 +91,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'shine',
+    'ShineApp.apps.ShineappConfig',
     'corsheaders',
     'rest_framework',
-    'shine.apps.shineConfig', 
+    #'shine.apps.shineConfig', 
     ]
 
 MIDDLEWARE = [
@@ -134,7 +134,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 #sqLite database config
-# DATABASES = {
+#DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': BASE_DIR / 'db.sqlite3',
@@ -148,13 +148,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'sdeiDB',
         'USER':'postgres',
-        'PASSWORD':'Testing@@1212',
-        'HOST':'localhost'
+        'PASSWORD':'joshlamar22',
+        'HOST':'localhost',
+        'PORT':'5432'
     }
 }
 
 ## User model
-AUTH_USER_MODEL = 'sdei.AppUser'
+#AUTH_USER_MODEL = 'VAM2S.AppUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (

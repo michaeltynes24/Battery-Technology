@@ -3,18 +3,18 @@ import Card from './Card'
 
 const CardStack = () => {
 
-  const divStyle = {
-    "max-width": "50rem"
-  };
-  const container = {
-    "max-width": "80%"
-  };
+//   const divStyle = {
+//     "max-width": "50rem"
+//   };
+//   const container = {
+//     "max-width": "80%"
+//   };
 
 
   return (
     
     <>
-  <div className ='container' style= {divStyle}>
+  {/* <div className ='container' style= {divStyle}>
 
   <div class="row">
     <div class="col-md-6">
@@ -32,7 +32,7 @@ const CardStack = () => {
         <Card imgURL = '/node_modules/bootstrap-icons/icons/cash-stack.svg' cardName = "Potential Savings" path = '/savings' />
     </div>
   </div>
-  </div>
+  </div> */}
 
     </>
   )

@@ -1,35 +1,72 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { TextField, Button, Typography, Paper, Box } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import FilledInput from '@mui/material/FilledInput';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import { useNavigate } from 'react-router-dom';
 
-const Login = (props) => {
-  const title = "Login to your Account";
-  const customContainer = {
-      "max-width": "400px",
-  };
+
+const Login = () => {
+    const navigate = useNavigate();
+
   return (
-    <div className = 'container-fluid text-center'>
+    <Grid
+      container
+      spacing={0}
+      alignItems="center"
+      justifyContent="center"
+      style={{ minHeight: '100vh' }}
+    >
+      <Grid item size={8}>
+        <Paper elevation={3} style={{ borderRadius: '20px', padding: '20px' }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Login
+          </Typography>
+          <form noValidate autoComplete="off" style={{color:'transparent'}}>
+          <Box
+      component="form"
+      sx={{ '& > :not(style)': { m: 1 } }}
+      noValidate
+      autoComplete="off"
+    >
+            <Box mb={2}>
+              <TextField
+                fullWidth
+                label="Email"
+                variant="standard"
+                type="email"
+                required
 
-      <h2 className='border-bottom pb-1'>{props.title ? props.title : title}</h2>
+              />
+            </Box>
 
-      <form>
-        <div className='container' style={customContainer}>
-        
-          <div className='form-group mb-2'>
-            <label className='mb-2' htmlFor='email'>Email Address</label>
-            <input type='email' className='form-control' id='email' placeholder='Email Address' />
-          </div>
+    </Box>
+            <Box mb={2}>
+              <TextField
+                fullWidth
+                label="Password"
+                variant="standard"
+                type="password"
+                required
 
-          
-        </div>
-      </form>
-
-   < Link to = '/Home' className = 'btn btn-primary me-3' style = {{textDecoration:'none'}}>Login</Link> 
-   < Link to = '/newUser' className = 'btn btn-primary' style = {{textDecoration:'none'}}>New User</Link> 
-
-   </div>
-
-  )
+              />
+            </Box>
+            <Button 
+          onClick={() => navigate('/home')}
+          variant="contained" 
+          sx={{width:'100%', marginTop: '32px', backgroundColor: '#ffcc80', color: '#000', fontWeight: 'bold', '&:hover': { backgroundColor: '#ffa726' } }}
+        >
+          Login
+        </Button>
+          </form>
+        </Paper>
+      </Grid>
+    </Grid>
+  );
 };
 
-export default Login
+export default Login;
