@@ -1,36 +1,86 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Box } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import Typography from '@mui/material/Typography';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
+const data = [
+  { time: '00:00', percentage: 30 },
+  { time: '02:00', percentage: 40 },
+  { time: '04:00', percentage: 50 },
+  { time: '06:00', percentage: 70 },
+  { time: '08:00', percentage: 60 },
+  { time: '10:00', percentage: 80 },
+  { time: '12:00', percentage: 90 },
+  { time: '14:00', percentage: 100 },
+  { time: '16:00', percentage: 80 },
+  { time: '18:00', percentage: 70 },
+  { time: '20:00', percentage: 60 },
+  { time: '22:00', percentage: 40 },
+];
+
+// Define chargingData
+const chargingData = [
+  { time: '00:00', status: 'Charging' },
+  { time: '06:00', status: 'Discharging' },
+  { time: '08:00', status: 'Charging' },
+  { time: '14:00', status: 'Discharging' },
+  { time: '22:00', status: 'Charging' },
+];
 
 const Optimizer = () => {
-  const customContainer = {
-    "max-width": "350px"
-  };
-
   return (
-    <>
-    <div className = 'container text-center'>
-      <div className = 'mb-4'>
-      <h2 className = 'border-bottom pb-3'>Your Optimized Routine</h2>
-        <h4>Charge and Discharge over 24 Hour period</h4>
-          <img className = 'mb-5' src="../../docs/images/chargeDischarge.png" alt="" />
-          <h5>Charging Periods:</h5>
-          <div className = 'container text-center' style = {customContainer}>
-              <ol className = 'mb-5'>
-                <li><p>12am-3pm (0:00-15:00)</p></li>
-                <li><p>9pm-12am (21:00-00:00)</p></li>
-              </ol>   
-            <h5>Discharging Periods:</h5>
-              <ol className = 'mb-5'>  
-                <li><p>3pm-9pm (15:00-21:00)</p></li>  
-              </ol>
-            <Link to = '/savings'><button className = 'btn btn-primary p-2 px-5'>View Potential Savings With This Schedule</button></Link>
-          </div>
-      </div>
-    </div>
-    </>
-  )
-}
+    <Grid container sx={{ minHeight: '100vh', maxHeight:'150vh', backgroundColor: 'transparent', paddingY:'5%' }}>
+    <Typography sx={{fontSize:40, mb:10,borderBottom:'solid', width:'100%',justifyContent:'center', display:'flex'}}>
+        Optimizer Tool
+    </Typography>
+      <Grid size = {12} sx={{height:'100%', marginBottom:'100px'}}>
+      {/* Line Chart */}
+      <Box sx={{ width: '100%', height: 400 }}>
+        <ResponsiveContainer>
+          <LineChart
+            data={data}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" label={{ value: 'Time of Day', position: 'insideBottomRight', offset: -10 }} />
+            <YAxis domain={[0, 100]} label={{ value: 'Charge (%)', angle: -90, position: 'insideLeft' }} />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="percentage" stroke="#8884d8" activeDot={{ r: 8 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </Box>
+      </Grid>
 
-export default Optimizer
+      {/* Table */}
+      <Grid size = {12} sx={{height:'100%'}}>
+      <Box sx={{ height: '50%', width: '100%', backgroundColor: 'lightgrey', padding:'20px', display:'flex'}}>
+        <TableContainer component={Paper}>
+          <Table aria-label="charging discharging times table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Time</TableCell>
+                <TableCell align="center">Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {chargingData.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell component="th" scope="row">
+                    {row.time}
+                  </TableCell>
+                  <TableCell align="center">{row.status}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+      </Grid>
+    </Grid>
+  );
+};
+
+export default Optimizer;
