@@ -9,7 +9,7 @@ using GLPK
 using Plots
 
 # Define parameters
-S_base = 1e3  # 1 kVA 
+S_base = 1e3  # 1 kVA
 γ_b = 0.06   # degradation cost of the battery $/kW
 
 D = 1:365    # number of days in a year 
