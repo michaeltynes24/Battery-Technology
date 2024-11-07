@@ -1,17 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Typography, Paper, Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import FilledInput from '@mui/material/FilledInput';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import { useNavigate } from 'react-router-dom';
+// import FilledInput from '@mui/material/FilledInput';
+// import FormControl from '@mui/material/FormControl';
+// import FormHelperText from '@mui/material/FormHelperText';
+// import Input from '@mui/material/Input';
+// import InputLabel from '@mui/material/InputLabel';
+// import OutlinedInput from '@mui/material/OutlinedInput';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+
 
 
 const Login = () => {
     const navigate = useNavigate();
+    const[email,SetEmail] = useState('');
+    const[password,SetPassword] = useState('');
+
+    const handleClick = async () => {
+        try {
+          // Send POST request to backend
+          const response = await axios.post("http://your-backend-url.com/api/endpoint", {
+            email: email,
+            password: password
+          });
+    
+          // Handle the response if needed
+          console.log("Data sent successfully:", response.data);
+        } catch (error) {
+          console.error("Error sending data:", error);
+        }
+      };
 
   return (
     <Grid
@@ -40,6 +59,8 @@ const Login = () => {
                 variant="standard"
                 type="email"
                 required
+                value = {email}
+                onChange = {(e) => SetEmail(e.target.value)}
 
               />
             </Box>
@@ -52,16 +73,24 @@ const Login = () => {
                 variant="standard"
                 type="password"
                 required
+                value = {password}
+                onChange = {(e) => SetPassword(e.target.value)}
 
               />
             </Box>
             <Button 
-          onClick={() => navigate('/home')}
+        //   onClick={() => navigate('/home')}
+          onClick = {handleClick}
           variant="contained" 
           sx={{width:'100%', marginTop: '32px', backgroundColor: '#ffcc80', color: '#000', fontWeight: 'bold', '&:hover': { backgroundColor: '#ffa726' } }}
         >
           Login
         </Button>
+        <Link to = '/newUser'>
+            <Typography sx = {{justifyContent:'center', display:'flex',mt:2}}>
+                New User? Sign Up
+            </Typography>
+        </Link>
           </form>
         </Paper>
       </Grid>

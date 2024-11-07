@@ -13,13 +13,23 @@ import NewUser from './pages/NewUser';
 import LandingPage from './pages/LandingPage';
 import Team from './pages/Team';
 import Contact from './pages/Contact';
+// import ProtectedRoute from './components/ProtectedRoute'
 
+function Logout() {
+    localStorage.clear()
+    return <Navigate to ='/'/>
+}
+
+function RegisterAndLogout() {
+    localStorage.clear()
+    return <Login />
+}
 
 export default function App() {
   return (   
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Layout />}> {/* parent route */}
+        <Route path="/" element={ <Layout /> }> {/* parent route */}
         <Route index element ={<Login />} />
         <Route path= "home" element ={<Home />} /> 
         <Route path="history" element={<History />} />

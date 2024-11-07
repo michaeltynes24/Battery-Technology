@@ -1,10 +1,51 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography, Checkbox, FormControlLabel, Slider } from '@mui/material';
+import api from '../api';
+import { useNavigate } from 'react-router-dom';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
+
+
 const NewUser = (props) => {
     const title = "New User Account";
     const [showExpandedInput, setShowExpandedInput] = useState(false);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    // const [FirstName, setFirstName] = useState("");
+    // const [LastName, setLastName] = useState("");
+    // const [email, setEmail] = useState("");
+    // const [importGreenButton, setImportGreenButton] = useState(false);
+    // const [solar, setSolar] = useState(false);
+    // const [summerOnPeak, setSummerOnPeak] = useState("");
+    // const [summerSuperOffPeak, setSummerSuperOffPeak] = useState("");
+    // const [summerOffPeak, setSummerOffPeak] = useState("");
+    // const [winterOnPeak, setWinterOnPeak] = useState("");
+    // const [winterSuperOffPeak, setWinterSuperOffPeak] = useState("");
+    // const [winterOffPeak, setWinterOffPeak] = useState("");
     const [batterySize, setBatterySize] = useState(50); // State for slider
+    // const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        setLoading(true);
+        e.preventDefault();
+
+        try {
+            const res = await api.post(route, { username, password })
+            if (method === "login") {
+                localStorage.setItem(ACCESS_TOKEN, res.data.access);
+                localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+                navigate("/")
+            } else {
+                navigate("/login")
+            }
+        } catch (error) {
+            alert(error)
+        } finally {
+            setLoading(false)
+        }
+    };
+
 
     const expandInputs = (option) => {
         if (option === 'Other') {
@@ -42,6 +83,7 @@ const NewUser = (props) => {
                     <InputLabel>Battery Type</InputLabel>
                     <Select defaultValue="" label="Battery Type">
                         <MenuItem value="">Choose...</MenuItem>
+                        {/* <MenuItem value="None">None</MenuItem> */}
                         <MenuItem value="Lithium-ion">Lithium-ion</MenuItem>
                         <MenuItem value="Sodium-ion">Sodium-ion</MenuItem>
                         <MenuItem value="Others">Others</MenuItem>
