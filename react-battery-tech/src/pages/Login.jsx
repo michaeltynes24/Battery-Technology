@@ -1,36 +1,34 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Paper, Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-// import FilledInput from '@mui/material/FilledInput';
-// import FormControl from '@mui/material/FormControl';
-// import FormHelperText from '@mui/material/FormHelperText';
-// import Input from '@mui/material/Input';
-// import InputLabel from '@mui/material/InputLabel';
-// import OutlinedInput from '@mui/material/OutlinedInput';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
 
 
-
-const Login = () => {
+const Login = ({route,method}) => {
     const navigate = useNavigate();
     const[email,SetEmail] = useState('');
+    const[username,setUsername] = useState('');
     const[password,SetPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleClick = async () => {
+
+    const handleSubmit = async (e) => {
+        setLoading(true);
+        e.preventDefault();
+
         try {
-          // Send POST request to backend
-          const response = await axios.post("http://your-backend-url.com/api/endpoint", {
-            email: email,
-            password: password
-          });
-    
-          // Handle the response if needed
-          console.log("Data sent successfully:", response.data);
+            const res = await api.post('/api/token/', { username, password })
+                localStorage.setItem(ACCESS_TOKEN, res.data.access);
+                localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+                navigate("/")
         } catch (error) {
-          console.error("Error sending data:", error);
+            alert(error)
+        } finally {
+            setLoading(false)
         }
-      };
+    };
 
   return (
     <Grid
@@ -55,12 +53,12 @@ const Login = () => {
             <Box mb={2}>
               <TextField
                 fullWidth
-                label="Email"
+                label="Username"
                 variant="standard"
-                type="email"
+                type="username"
                 required
-                value = {email}
-                onChange = {(e) => SetEmail(e.target.value)}
+                value = {username}
+                onChange = {(e) => setUsername(e.target.value)}
 
               />
             </Box>
@@ -80,7 +78,7 @@ const Login = () => {
             </Box>
             <Button 
         //   onClick={() => navigate('/home')}
-          onClick = {handleClick}
+          onClick = {handleSubmit}
           variant="contained" 
           sx={{width:'100%', marginTop: '32px', backgroundColor: '#ffcc80', color: '#000', fontWeight: 'bold', '&:hover': { backgroundColor: '#ffa726' } }}
         >

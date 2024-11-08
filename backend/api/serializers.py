@@ -6,7 +6,7 @@ from .models import EnergyUsage,Optimizer,Savings
 class UserSerializer(serializers.ModelSerializer):
         class Meta:
                 model = User
-                fields = ["id","username", "email", "password"]
+                fields = ["id","username", "email", "password",'first_name','last_name']
                 extra_kwargs = {"password": {"write_only": True}} #no one can read password
 
         def create(self, validated_data):

@@ -4,6 +4,7 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typo
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
+import { Last } from 'react-bootstrap/esm/PageItem';
 
 
 const NewUser = (props) => {
@@ -11,19 +12,19 @@ const NewUser = (props) => {
     const [showExpandedInput, setShowExpandedInput] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    // const [FirstName, setFirstName] = useState("");
-    // const [LastName, setLastName] = useState("");
-    // const [email, setEmail] = useState("");
-    // const [importGreenButton, setImportGreenButton] = useState(false);
-    // const [solar, setSolar] = useState(false);
-    // const [summerOnPeak, setSummerOnPeak] = useState("");
-    // const [summerSuperOffPeak, setSummerSuperOffPeak] = useState("");
-    // const [summerOffPeak, setSummerOffPeak] = useState("");
-    // const [winterOnPeak, setWinterOnPeak] = useState("");
-    // const [winterSuperOffPeak, setWinterSuperOffPeak] = useState("");
-    // const [winterOffPeak, setWinterOffPeak] = useState("");
+    const [first_name, setFirstName] = useState("");
+    const [last_name, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [importGreenButton, setImportGreenButton] = useState(false);
+    const [solar, setSolar] = useState(false);
+    const [summerOnPeak, setSummerOnPeak] = useState("");
+    const [summerSuperOffPeak, setSummerSuperOffPeak] = useState("");
+    const [summerOffPeak, setSummerOffPeak] = useState("");
+    const [winterOnPeak, setWinterOnPeak] = useState("");
+    const [winterSuperOffPeak, setWinterSuperOffPeak] = useState("");
+    const [winterOffPeak, setWinterOffPeak] = useState("");
     const [batterySize, setBatterySize] = useState(50); // State for slider
-    // const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -31,14 +32,10 @@ const NewUser = (props) => {
         e.preventDefault();
 
         try {
-            const res = await api.post(route, { username, password })
-            if (method === "login") {
-                localStorage.setItem(ACCESS_TOKEN, res.data.access);
-                localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-                navigate("/")
-            } else {
+            const res = await api.post('/api/user/register/', { username, password,email,first_name,last_name })
+                // localStorage.setItem(ACCESS_TOKEN, res.data.access);
+                // localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
                 navigate("/login")
-            }
         } catch (error) {
             alert(error)
         } finally {
@@ -61,21 +58,36 @@ const NewUser = (props) => {
 
             {/* New User Form */}
 
-            <form>
+            <form onSubmit={handleSubmit}>
                 <FormControl fullWidth sx={{ mb: 3 }}>
-                    <TextField label="First Name" variant="outlined" fullWidth />
+                    <TextField label="First Name" variant="outlined" fullWidth
+                                value={first_name} 
+                                onChange={(e) => setFirstName(e.target.value)}/>
                 </FormControl>
 
                 <FormControl fullWidth sx={{ mb: 3 }}>
-                    <TextField label="Last Name" variant="outlined" fullWidth />
+                    <TextField label="Last Name" variant="outlined" fullWidth
+                                value={last_name} 
+                                onChange={(e) => setLastName(e.target.value)}/>
                 </FormControl>
 
                 <FormControl fullWidth sx={{ mb: 3 }}>
-                    <TextField label="Username" variant="outlined" fullWidth />
+                    <TextField label="Username" variant="outlined" fullWidth
+                                value={username} 
+                                onChange={(e) => setUsername(e.target.value)}/>
+                </FormControl>
+
+                
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                    <TextField label="Password" variant="outlined" fullWidth
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)}/>
                 </FormControl>
 
                 <FormControl fullWidth sx={{ mb: 3 }}>
-                    <TextField label="Email Address" variant="outlined" fullWidth />
+                    <TextField label="Email Address" variant="outlined" fullWidth
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)}/>
                 </FormControl>
 
                 {/* Battery Type Dropdown */}
@@ -144,11 +156,9 @@ const NewUser = (props) => {
                 />
 
                 {/* Submit Button */}
-                <Link to='/home' style={{ textDecoration: 'none' }}>
-                    <Button variant="contained" fullWidth sx={{ mt: 3, backgroundColor:'#ffcc80',  fontWeight: 'bold', '&:hover': { backgroundColor: '#ffa726' } }}>
+                    <Button type='submit'variant="contained" fullWidth sx={{ mt: 3, backgroundColor:'#ffcc80',  fontWeight: 'bold', '&:hover': { backgroundColor: '#ffa726' } }}>
                         {props.title ? "Save" : "Submit"}
                     </Button>
-                </Link>
             </form>
         </Box>
     );

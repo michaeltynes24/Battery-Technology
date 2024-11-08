@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,8 +10,14 @@ import Grid from '@mui/material/Grid2';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
+
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+        navigate('/logout')
+    }
 
   return (
     <>
@@ -47,7 +53,7 @@ const Header = () => {
 
           {/* Right: Login Button */}
           <Grid size={5} sx={{ justifyContent: 'flex-end', display: 'flex' }}>
-            <Button color="inherit">Login</Button>
+            <Button onClick= {handleLogout} color="inherit">Logout</Button>
           </Grid>
         </Toolbar>
       </AppBar>
