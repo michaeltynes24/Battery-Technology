@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import EnergyUsage,Optimizer,Savings
+from .models import EnergyUsage,Optimizer,Savings,UserExtension
 
 
 class UserSerializer(serializers.ModelSerializer):
         class Meta:
-                model = User
-                fields = ["id","username", "email", "password",'first_name','last_name']
-                extra_kwargs = {"password": {"write_only": True}} #no one can read password
+            model = User
+            fields = ["id","username", "email", "password",'first_name','last_name']
+            extra_kwargs = {"password": {"write_only": True}} #no one can read password
 
         def create(self, validated_data):
             user = User.objects.create_user(**validated_data)
@@ -30,3 +30,8 @@ class SavingsSerializer(serializers.ModelSerializer):
               model = Savings
               fields = ['NoBatteryPrice', 'LithiumPrice','SodiumPrice']
               extra_kwargs = {'owner':{'read_only': True}}
+
+class UserExtensionSerializer(serializers.ModelSerializer):
+       class Meta:
+              model = UserExtension
+              fields = ['batterytype','utility','importGreenButton','batterySize','solar','username' ]

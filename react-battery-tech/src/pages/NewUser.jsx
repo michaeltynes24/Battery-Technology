@@ -24,23 +24,35 @@ const NewUser = (props) => {
     const [winterSuperOffPeak, setWinterSuperOffPeak] = useState("");
     const [winterOffPeak, setWinterOffPeak] = useState("");
     const [batterySize, setBatterySize] = useState(50); // State for slider
+    const [batterytype, setBatteryType] = useState('');
     const [loading, setLoading] = useState(false);
+    const[utility, setUtility] = useState("")
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
-
+        // send registration info
         try {
-            const res = await api.post('/api/user/register/', { username, password,email,first_name,last_name })
-                // localStorage.setItem(ACCESS_TOKEN, res.data.access);
-                // localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-                navigate("/login")
+            const res = await api.post('/api/user/register/', { username, password,email,first_name,last_name })   
+            navigate("/login")
         } catch (error) {
             alert(error)
         } finally {
             setLoading(false)
         }
+
+        try {
+            const res2 = await api.post('/api/userextension/', { username, utility,importGreenButton,solar,
+                                                                summerSuperOffPeak,summerOffPeak,summerOnPeak,
+                                                                winterSuperOffPeak,winterOffPeak,winterOnPeak,
+                                                                batterySize,batterytype
+            })   
+        } catch (error) {
+            alert(error)
+        }
+
+
     };
 
 
@@ -93,7 +105,7 @@ const NewUser = (props) => {
                 {/* Battery Type Dropdown */}
                 <FormControl fullWidth sx={{ mb: 3 }}>
                     <InputLabel>Battery Type</InputLabel>
-                    <Select defaultValue="" label="Battery Type">
+                    <Select defaultValue="" label="Battery Type" value={batterytype} onChange={(e) => setBatteryType(e.target.value)}>
                         <MenuItem value="">Choose...</MenuItem>
                         {/* <MenuItem value="None">None</MenuItem> */}
                         <MenuItem value="Lithium-ion">Lithium-ion</MenuItem>
@@ -105,7 +117,7 @@ const NewUser = (props) => {
                 {/* Utility Company Dropdown */}
                 <FormControl fullWidth sx={{ mb: 3 }}>
                     <InputLabel>Utility Company</InputLabel>
-                    <Select defaultValue="" label="Utility Company" onChange={(e) => expandInputs(e.target.value)}>
+                    <Select defaultValue="" label="Utility Company" value={utility} onChange={(e) => setUtility(e.target.value)}>
                         <MenuItem value="">Choose...</MenuItem>
                         <MenuItem value="SDGE">SDGE</MenuItem>
                         <MenuItem value="PGE">PGE</MenuItem>
@@ -115,7 +127,7 @@ const NewUser = (props) => {
 
                 {/* Import Data Checkbox */}
                 <FormControlLabel
-                    control={<Checkbox />}
+                    control={<Checkbox value = {importGreenButton} onChange={(e) => setImportGreenButton(e.target.checked)}/>}
                     label="Would you like to import your energy data? (SDGE & PGE only)"
                     sx={{ mb: 3 }}
                 />
@@ -123,12 +135,12 @@ const NewUser = (props) => {
                 {/* Expanded Inputs */}
                 {showExpandedInput && (
                     <Box sx={{ mb: 3 }}>
-                        <TextField label="Summer Super Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
-                        <TextField label="Summer Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
-                        <TextField label="Summer On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
-                        <TextField label="Winter Super Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
-                        <TextField label="Winter Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
-                        <TextField label="Winter On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField value={summerSuperOffPeak} onChange = {(e) => setSummerSuperOffPeak(e.target.value)}label="Summer Super Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField value={summerOffPeak} onChange = {(e) => setSummerOffPeak(e.target.value)}label="Summer Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField value={summerOnPeak} onChange = {(e) => setSummerSuperOnPeak(e.target.value)}label="Summer On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField value={winterSuperOffPeak} onChange = {(e) => setWinterSuperOffPeak(e.target.value)}label="Winter Super Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField value={winterOffPeak} onChange = {(e) => setWinterOffPeak(e.target.value)}label="Winter Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField value={winterOnPeak} onChange = {(e) => setWinterOnPeak(e.target.value)}label="Winter On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
                     </Box>
                 )}
 
@@ -150,7 +162,7 @@ const NewUser = (props) => {
 
                 {/* Solar Checkbox */}
                 <FormControlLabel
-                    control={<Checkbox />}
+                    control={<Checkbox value = {solar} onChange={(e) => setSolar(e.target.checked)} />}
                     label="Do you have Solar? (check for yes)"
                     sx={{ mb: 3 }}
                 />

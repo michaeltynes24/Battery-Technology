@@ -1,15 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
-# Create your models here.
 
 
-from django.db import models
 
-# Create your models here.
-from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.db import models
-from django.contrib.auth.models import User
+class UserExtension(models.Model):
+    batterytype = models.CharField(max_length=100, blank=True, null=True)
+    utility = models.CharField(max_length=100, blank=True, null=True)
+    importGreenButton = models.BooleanField(default=False)
+    batterySize = models.IntegerField(default=50)
+    solar = models.BooleanField(default=False)
+    username = models.CharField(max_length=100, blank=True, null=True)
 
 class EnergyUsage(models.Model):
     timestamp = models.DateTimeField()
