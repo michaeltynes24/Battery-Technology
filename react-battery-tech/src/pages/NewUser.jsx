@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography, Checkbox, FormControlLabel, Slider } from '@mui/material';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
-import { Last } from 'react-bootstrap/esm/PageItem';
-
 
 const NewUser = (props) => {
+    // fetch data only when props.title is passed in(meaning user is on profile page, not new user page)
+    useEffect(() => {
+        if (props.title) {
+            fetchData();
+        }
+    }, [props.title]);
+
+    const fetchData = () => {
+        api
+            .get('/api/userextension/')
+            .then((res) => res.data)
+            .then((data) => {
+                setData(data);
+                console.log(data)
+            })
+            .catch((err) => alert(err));
+    };
+    const [data,setData] = useState([])
     const title = "New User Account";
     const [showExpandedInput, setShowExpandedInput] = useState(false);
     const [username, setUsername] = useState("");
@@ -35,24 +49,16 @@ const NewUser = (props) => {
         // send registration info
         try {
             const res = await api.post('/api/user/register/', { username, password,email,first_name,last_name })   
+            const res2 = await api.post('/api/userextension/', { username, utility,importGreenButton,solar,
+                                                    summerSuperOffPeak,summerOffPeak,summerOnPeak,
+                                                    winterSuperOffPeak,winterOffPeak,winterOnPeak,
+                                                    batterySize,batterytype })
             navigate("/login")
         } catch (error) {
             alert(error)
         } finally {
             setLoading(false)
         }
-
-        try {
-            const res2 = await api.post('/api/userextension/', { username, utility,importGreenButton,solar,
-                                                                summerSuperOffPeak,summerOffPeak,summerOnPeak,
-                                                                winterSuperOffPeak,winterOffPeak,winterOnPeak,
-                                                                batterySize,batterytype
-            })   
-        } catch (error) {
-            alert(error)
-        }
-
-
     };
 
 
@@ -137,7 +143,7 @@ const NewUser = (props) => {
                     <Box sx={{ mb: 3 }}>
                         <TextField value={summerSuperOffPeak} onChange = {(e) => setSummerSuperOffPeak(e.target.value)}label="Summer Super Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
                         <TextField value={summerOffPeak} onChange = {(e) => setSummerOffPeak(e.target.value)}label="Summer Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
-                        <TextField value={summerOnPeak} onChange = {(e) => setSummerSuperOnPeak(e.target.value)}label="Summer On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
+                        <TextField value={summerOnPeak} onChange = {(e) => setSummerOnPeak(e.target.value)}label="Summer On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
                         <TextField value={winterSuperOffPeak} onChange = {(e) => setWinterSuperOffPeak(e.target.value)}label="Winter Super Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
                         <TextField value={winterOffPeak} onChange = {(e) => setWinterOffPeak(e.target.value)}label="Winter Off Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />
                         <TextField value={winterOnPeak} onChange = {(e) => setWinterOnPeak(e.target.value)}label="Winter On Peak price" fullWidth variant="outlined" sx={{ mb: 3 }} />

@@ -22,6 +22,10 @@ const Login = ({route,method}) => {
             const res = await api.post('/api/token/', { username, password })
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+                localStorage.setItem('username', username)
+                console.log(ACCESS_TOKEN)
+                console.log(REFRESH_TOKEN)
+
                 navigate("/")
         } catch (error) {
             alert(error)

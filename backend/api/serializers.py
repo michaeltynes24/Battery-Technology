@@ -12,6 +12,11 @@ class UserSerializer(serializers.ModelSerializer):
         def create(self, validated_data):
             user = User.objects.create_user(**validated_data)
             return user
+        def validate_username(self, value):
+        # Check if the username already exists in the database
+            if UserExtension.objects.filter(username=value).exists():
+                raise serializers.ValidationError("This username already exists. Please choose another one.")
+            return value
         
 class OptimizerSerializer(serializers.ModelSerializer):
        class Meta:
