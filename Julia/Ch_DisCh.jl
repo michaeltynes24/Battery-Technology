@@ -1,4 +1,3 @@
-cd("C:\\Users\\alexr\\OneDrive\\Documents\\GitHub\\Senior_design_A_VAM2S_Solar_System\\Folder1")
 
 import Pkg
 
