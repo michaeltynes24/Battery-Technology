@@ -20,19 +20,19 @@ function Logout() {
 }
 
 export default function App() {
-  const [settingsComplete, setSettingsComplete] = useState(false);
+//   const [settingsComplete, setSettingsComplete] = useState(false);
 
   // Check if settings are saved in localStorage
-  useEffect(() => {
-    const isConfigured = localStorage.getItem('settingsComplete');
-    setSettingsComplete(isConfigured === 'true');
-  }, []);
+//   useEffect(() => {
+//     const isConfigured = localStorage.getItem('settingsComplete');
+//     setSettingsComplete(isConfigured === 'true');
+//   }, []);
 
   // Handler for saving settings
-  const handleSettingsSave = () => {
-    localStorage.setItem('settingsComplete', 'true');
-    setSettingsComplete(true);
-  };
+//   const handleSettingsSave = () => {
+//     localStorage.setItem('settingsComplete', 'true');
+//     setSettingsComplete(true);
+//   };
 
   return (
     <BrowserRouter>
@@ -43,10 +43,9 @@ export default function App() {
         <Route path="logout" element={<Logout />} />
 
         {/* New User Page */}
-        <Route path="newUser" element={<NewUser onSave={handleSettingsSave} />} />
+        <Route path="newUser" element={<NewUser/>} />
 
         {/* Main Application Routes */}
-        {settingsComplete ? (
           <Route
             path="/"
             element={
@@ -64,10 +63,6 @@ export default function App() {
             <Route path="contact" element={<Contact />} />
             <Route path="*" element={<NoPage />} />
           </Route>
-        ) : (
-          // Redirect to NewUser if settings are not complete
-          <Route path="*" element={<Navigate to="/newUser" replace />} />
-        )}
       </Routes>
     </BrowserRouter>
   );

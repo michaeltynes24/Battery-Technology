@@ -54,15 +54,16 @@ const NewUser = (props) => {
             });
 
             // Set settingsComplete in localStorage
-            localStorage.setItem("settingsComplete", "true");
+            // localStorage.setItem("settingsComplete", "true");
 
             // Call onSave prop to notify the App component
-            if (props.onSave) props.onSave();
+            // if (props.onSave) props.onSave();
 
             // Redirect to the login page after saving
             navigate("/login");
         } catch (error) {
             alert("Error saving settings. Please try again.");
+            console.log(error)
         } finally {
             setLoading(false);
         }
