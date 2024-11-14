@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography, Checkbox, FormControlLabel, Slider } from '@mui/material';
 import api from '../api';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ACCESS_TOKEN } from '../constants';
 
 const Profile = (props) => {
     const location = useLocation()
@@ -60,8 +61,8 @@ const Profile = (props) => {
         e.preventDefault();
         // send registration info
         try {
-            const res = await api.put(`/api/user/?username/?username=${username}`, { username, password,email,first_name,last_name })   
-            const res2 = await api.post(`/api/userextension/?username=${username}`, { username, utility,importGreenButton,solar,
+            const res = await api.put(`/api/user/${username}/`, { email,first_name,last_name })   
+            const res2 = await api.put(`api/userextension/${username}/update/`, { utility,importGreenButton,solar,
                                                     summerSuperOffPeak,summerOffPeak,summerOnPeak,
                                                     winterSuperOffPeak,winterOffPeak,winterOnPeak,
                                                     batterySize,batterytype })

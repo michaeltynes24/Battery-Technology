@@ -8,6 +8,12 @@ class UserSerializer(serializers.ModelSerializer):
             model = User
             fields = ["id","username", "email", "password",'first_name','last_name']
             extra_kwargs = {"password": {"write_only": True}} #no one can read password
+        def __init__(self, *args, **kwargs):
+            super(UserSerializer, self).__init__(*args, **kwargs)
+            # If 'instance' is provided, it indicates an update operation, so set username/password to read-only
+            if self.instance:
+                self.fields['username'].read_only = True
+                self.fields['password'].read_only = True
 
         def create(self, validated_data):
             user = User.objects.create_user(**validated_data)
@@ -18,6 +24,18 @@ class UserSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("This username already exists. Please choose another one.")
             return value
         
+        def update(self, instance, validated_data):
+            # Check if password is in validated data, if so, hash it
+            password = validated_data.pop("password", None)
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            
+            if password:
+                instance.set_password(password)  # Hash the password before saving
+            
+            instance.save()
+            return instance
+    
 class OptimizerSerializer(serializers.ModelSerializer):
        class Meta:
               model = Optimizer
@@ -40,3 +58,8 @@ class UserExtensionSerializer(serializers.ModelSerializer):
        class Meta:
               model = UserExtension
               fields = ['batterytype','utility','importGreenButton','batterySize','solar','username' ]
+       def __init__(self, *args, **kwargs):
+            super(UserExtensionSerializer, self).__init__(*args, **kwargs)
+            # If 'instance' is provided, it indicates an update operation, so set username/password to read-only
+            if self.instance:
+                self.fields['username'].read_only = True
