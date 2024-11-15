@@ -21,10 +21,12 @@ const NewUser = (props) => {
     const [winterSuperOffPeak, setWinterSuperOffPeak] = useState("");
     const [winterOffPeak, setWinterOffPeak] = useState("");
     const [batterySize, setBatterySize] = useState(50); // State for slider
-    const [batteryType, setBatteryType] = useState('');
+    const [batterytype, setBatteryType] = useState("");
     const [loading, setLoading] = useState(false);
     const [utility, setUtility] = useState("");
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({}); // State to track errors
+
 
     // Fetch user extension data if editing an existing profile
     useEffect(() => {
@@ -39,10 +41,30 @@ const NewUser = (props) => {
             .then((data) => setData(data))
             .catch((err) => alert(err));
     };
+    const validateInputs = () => {
+        const newErrors = {};
+    
+        if (!username) newErrors.username = "Username is required";
+        if (!password) newErrors.password = "Password is required";
+        if (!email) {
+            newErrors.email = "Email is required";
+        } else if (!validateEmail(email)) {
+            newErrors.email = "Invalid email format";
+        }
+    
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // Return true if no errors
+    };
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email); // Returns true if email is valid
+    };
 
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
+        if (!validateInputs()) return;
         try {
             // Register user and extension details
             await api.post('/api/user/register/', { username, password, email, first_name, last_name });
@@ -50,24 +72,34 @@ const NewUser = (props) => {
                 username, utility, importGreenButton, solar,
                 summerSuperOffPeak, summerOffPeak, summerOnPeak,
                 winterSuperOffPeak, winterOffPeak, winterOnPeak,
-                batterySize, batteryType
+                batterySize, batterytype,
             });
-
-            // Set settingsComplete in localStorage
-            // localStorage.setItem("settingsComplete", "true");
-
-            // Call onSave prop to notify the App component
-            // if (props.onSave) props.onSave();
-
-            // Redirect to the login page after saving
             navigate("/login");
         } catch (error) {
-            alert("Error saving settings. Please try again.");
-            console.log(error)
+            // Handle validation or other errors
+            if (error.response) {
+                // Check if the error is from validation
+                const { data, status } = error.response;
+                if (status === 400 && data) {
+                    // Display specific error messages for missing fields
+                    const errorMessages = Object.entries(data)
+                        .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+                        .join('\n');
+                    alert(`Validation Errors:\n${errorMessages}`);
+                } else {
+                    // Handle other API errors
+                    alert(`Error: ${data.detail || 'An unexpected error occurred'}`);
+                }
+            } else {
+                // Handle non-response errors (e.g., network issues)
+                alert('Error: Unable to reach the server. Please try again.');
+            }
+            console.log(error);
         } finally {
             setLoading(false);
         }
     };
+    
 
     const expandInputs = (option) => {
         setShowExpandedInput(option === 'Other');
@@ -96,25 +128,31 @@ const NewUser = (props) => {
                 <FormControl fullWidth sx={{ mb: 3 }}>
                     <TextField label="Username" variant="outlined" fullWidth
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)} />
+                        onChange={(e) => setUsername(e.target.value)}
+                        error={!!errors.username}
+                        helperText={errors.username || ""} />
                 </FormControl>
 
                 <FormControl fullWidth sx={{ mb: 3 }}>
                     <TextField label="Password" variant="outlined" fullWidth
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)} />
+                        onChange={(e) => setPassword(e.target.value)}
+                        error={!!errors.password}
+                        helperText={errors.password || ""} />
                 </FormControl>
 
                 <FormControl fullWidth sx={{ mb: 3 }}>
                     <TextField label="Email Address" variant="outlined" fullWidth
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)} />
+                        onChange={(e) => setEmail(e.target.value)}
+                        error={!!errors.email}
+                        helperText={errors.email || ""} />
                 </FormControl>
 
                 {/* Battery Type Dropdown */}
                 <FormControl fullWidth sx={{ mb: 3 }}>
                     <InputLabel>Battery Type</InputLabel>
-                    <Select defaultValue="" label="Battery Type" value={batteryType} onChange={(e) => setBatteryType(e.target.value)}>
+                    <Select defaultValue="" label="Battery Type" value={batterytype} onChange={(e) => setBatteryType(e.target.value)}>
                         <MenuItem value="">Choose...</MenuItem>
                         <MenuItem value="Lithium-ion">Lithium-ion</MenuItem>
                         <MenuItem value="Sodium-ion">Sodium-ion</MenuItem>
