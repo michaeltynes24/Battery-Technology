@@ -35,7 +35,7 @@ const Header = () => {
             // Left: Show Tabs on other pages
             <Grid size={5}>
               <Tabs value={location.pathname}>
-              <Tab label="Home" value="/home" component={Link} to="/home" />
+              <Tab label="Home" value="/" component={Link} to="/" />
                 <Tab label="Optimizer" value="/optimizer" component={Link} to="/optimizer" />
                 <Tab label="History" value="/history" component={Link} to="/history" />
                 <Tab label="Profile" value="/profile" component={Link} to="/profile" />

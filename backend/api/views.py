@@ -173,7 +173,7 @@ def upload_csv(request):
 
 
         try:
-            df = pd.read_csv(file_path)  # Read CSV into a Pandas DataFrame
+            df = pd.read_csv(file_path, skiprows=13)  # Read CSV into a Pandas DataFrame
             print("file parsed...\n")
         except Exception as e:
             os.remove(file_path)

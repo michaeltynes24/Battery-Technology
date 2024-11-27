@@ -37,7 +37,6 @@ const Profile = (props) => {
     };
     const title = "Account Information";
     const [showExpandedInput, setShowExpandedInput] = useState(false);
-    // const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
@@ -148,13 +147,16 @@ const Profile = (props) => {
                 {/* Import Data Checkbox */}
                 <FormControlLabel
                     control={<Checkbox value = {importGreenButton} onChange={(e) => setImportGreenButton(e.target.checked)}/>}
-                    label="Would you like to import your energy data? (SDGE & PGE only)"
+                    label="Would you like to upload your energy data?"
                     sx={{ mb: 3 }}
                 />
+                
+                {importGreenButton && (
                 <Box>
-                    <FileUploader />
+                        <FileUploader />
+                
                 </Box>
-
+                )}
                 {/* Expanded Inputs */}
                 {showExpandedInput && (
                     <Box sx={{ mb: 3 }}>
