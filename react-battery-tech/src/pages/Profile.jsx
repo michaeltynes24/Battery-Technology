@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography, Checkbox, FormControlLabel, Slider } from '@mui/material';
 import api from '../api';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ACCESS_TOKEN } from '../constants';
+import FileUploader from './fileUploader';
 
 const Profile = (props) => {
     const location = useLocation()
@@ -84,6 +84,7 @@ const Profile = (props) => {
     };
 
     return (
+<>
         <Box sx={{ maxWidth: '80%', mx: 'auto', mt:7, mb:3 }}>
             <Typography sx = {{justifyContent:'center', display:'flex'}}variant="h4" gutterBottom>{title}</Typography>
 
@@ -150,6 +151,9 @@ const Profile = (props) => {
                     label="Would you like to import your energy data? (SDGE & PGE only)"
                     sx={{ mb: 3 }}
                 />
+                <Box>
+                    <FileUploader />
+                </Box>
 
                 {/* Expanded Inputs */}
                 {showExpandedInput && (
@@ -192,7 +196,8 @@ const Profile = (props) => {
                     </Button>
             </form>
         </Box>
+        </>
+
     );
 }
-
 export default Profile;

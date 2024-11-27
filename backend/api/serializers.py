@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import EnergyUsage,Optimizer,Savings,UserExtension
+from .models import EnergyUsage,Optimizer,Savings,UserExtension, FileModel
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -63,3 +63,9 @@ class UserExtensionSerializer(serializers.ModelSerializer):
             # If 'instance' is provided, it indicates an update operation, so set username/password to read-only
             if self.instance:
                 self.fields['username'].read_only = True
+
+class FileModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileModel
+        fields = ['date', 'meter', 'time', 'duration', 'consumption', 'generation', 'net']
+

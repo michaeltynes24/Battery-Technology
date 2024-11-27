@@ -29,3 +29,14 @@ class Savings(models.Model):
     SodiumPrice = models.PositiveIntegerField()
     #link data to a user
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "Savings")
+
+
+class FileModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="uploaded_files")
+    date = models.CharField(blank=True,null=True)
+    meter = models.CharField(blank=True,null=True)
+    time = models.CharField(blank=True,null=True)
+    duration = models.CharField(blank=True,null=True)
+    consumption = models.CharField(blank=True,null=True)
+    generation = models.CharField(blank=True,null=True)
+    net = models.CharField(blank=True,null=True)
