@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import EnergyUsage,Savings,Optimizer, UserExtension
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import hashlib
 #for file uploads
 import os
 import pandas as pd
@@ -165,9 +166,12 @@ def upload_csv(request):
     print(request.headers.get('Authorization'))
     if request.method == 'POST' and request.FILES['file']:
         file = request.FILES['file']
-
+        #check to see if file exists before saving
+        existing_file = FileModel.objects.filter(file_hash=generate_file_hash(file)).exists()
+        if existing_file:
+            return JsonResponse({"error": "File has already been uploaded."}, status=400)
         # Save file temporarily
-        file_path = default_storage.save(f'media/{file.name}', file)
+        file_path = default_storage.save(f'media/{file.name}_{request.user}', file)
         print("file saved...\n")
         print(f"Authenticated: {request.user.is_authenticated}, User: {request.user}")
 
@@ -180,24 +184,20 @@ def upload_csv(request):
             return Response({"error": f"Failed to parse the CSV file: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Associate data with the authenticated user
-
-       # if not request.user.is_authenticated:
-       #     print("User must be logged in to upload")
-       #     return JsonResponse({"error": "User must be logged in to upload"}, status=403)
         try:
             print(f"trying to save the data...\n{request.user}{request.user.is_anonymous}")
             for _, row in df.iterrows():
                 FileModel.objects.create(
                     user=request.user,  # Link to the logged-in user
-                    date=row['Meter Number'],
-                    meter=row['Date'],
+                    file_hash = generate_file_hash(file), #create file hash to idetify file and prevent duplicates
+                    meter=row['Meter Number'],
+                    date=row['Date'],
                     time=row['Start Time'],
                     duration=row['Duration'],
                     consumption=row['Consumption'],
                     generation=row['Generation'],
-                    net=row['Net']
-                )
-            os.remove(file_path)
+                    net=row['Net'])
+                #os.remove(file_path)
             return JsonResponse({"message": "File uploaded and processed successfully!"}, status=200)
         except Exception as e:
             os.remove(file_path)
@@ -205,3 +205,15 @@ def upload_csv(request):
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
+def generate_file_hash(file):
+    hasher = hashlib.sha256()
+    for chunk in file.chunks():
+        hasher.update(chunk)
+    return hasher.hexdigest()
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def uploaded_files(request):
+    files = FileModel.objects.filter(user=request.user)
+    serializer = FileModelSerializer(files, many=True)
+    return Response(serializer.data)

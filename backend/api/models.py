@@ -33,8 +33,9 @@ class Savings(models.Model):
 
 class FileModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="uploaded_files")
-    date = models.CharField(blank=True,null=True)
+    file_hash = models.CharField(max_length=64, unique=False)
     meter = models.CharField(blank=True,null=True)
+    date = models.CharField(blank=True,null=True)
     time = models.CharField(blank=True,null=True)
     duration = models.CharField(blank=True,null=True)
     consumption = models.CharField(blank=True,null=True)

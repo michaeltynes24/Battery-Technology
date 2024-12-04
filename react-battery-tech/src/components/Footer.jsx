@@ -15,7 +15,7 @@ const Footer = () => {
         </Grid>
 
         <Grid size={12}>
-          <Link to="/home" style={{ textDecoration: 'none', marginRight: '16px' }}>
+          <Link to="/" style={{ textDecoration: 'none', marginRight: '16px' }}>
             <Typography sx={{ font:'body', color: 'darkgrey', '&:hover': { color: 'orange' }, display: 'inline-block' }}>
               Home
             </Typography>
