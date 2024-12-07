@@ -11,54 +11,45 @@ using JuMP
 using GLPK
 using Ipopt
 using CSV, DataFrames
-using Dates,Statistics
+using Dates, Statistics
 
-# Read the CSV file
-csv_reader = CSV.File("15minute_data_california.csv")
+# Read the updated CSV file
+csv_reader = CSV.File("Electric_60_Minute_1-1-2024_11-13-2024.csv")
 df = DataFrame(csv_reader)
 
-# Sort the DataFrame by local_15min
-df_sorted = sort(df, order(:local_15min))
+# Combine Date and Start Time into a single DateTime column
+df[!,:DateTime] = DateTime.(df.Date .* " " .* df.Start_Time, "m/d/yyyy HH:MM AM/PM")
 
-# Select relevant columns
-df_dem_sol = df_sorted[:, [:dataid, :local_15min, :grid, :solar]]
+# Filter data (if necessary, for a specific Meter Number)
+df = filter(row -> row."Meter Number" == "05366729", df)
 
-# Extract year from local_15min and filter by year 2018
-df_dem_sol[!,:year] = [parse(Int, chop(row.local_15min, head=0, tail=18)) for row in eachrow(df_dem_sol)]
-df_dem_sol = filter(row -> row.year == 2018, df_dem_sol)
+# Sort by DateTime
+df_sorted = sort(df, :DateTime)
 
-# Filter by dataid 1731
-df_dem_sol = filter(row -> row.dataid == 1731, df_dem_sol)
+# Select relevant columns for demand and solar generation
+df_dem_sol = df_sorted[:, [:DateTime, :Consumption, :Solar]]
 
-# Define start date
-start_date = DateTime(2018, 1, 1, 1, 0)
+# Define start date and initialize arrays
+start_date = DateTime(2024, 1, 1)
+D = 1:365  # Days
+T = 1:24   # Hours
+pd = zeros(length(D), length(T))  # Demand (grid consumption)
+ps = zeros(length(D), length(T))  # Solar generation
 
-# Define ranges for days and hours
-D = 1:365
-T = 1:24
-
-# Initialize arrays for solar and grid data
-pd = zeros(length(D), length(T))  # solar availability
-ps = zeros(length(D), length(T))
-
-# Iterate over each date and time, populating solar and grid data arrays
+# Populate arrays with data from the new utility CSV
 for d in D
     for t in T
-        # Calculate the target datetime for the current iteration
-        target_datetime = start_date + Dates.Hour(t - 1)
-        
-        # Find the index of the row in df_dem_sol corresponding to the target datetime
-        idx = findfirst(datetime -> datetime == target_datetime, df_dem_sol.local_15min)
-        
+        target_datetime = start_date + Hour(t - 1)
+        idx = findfirst(row -> row.DateTime == target_datetime, df_dem_sol)
         if !isnothing(idx)
-            pd[d, t] = df_dem_sol[idx, :solar]
-            ps[d, t] = df_dem_sol[idx, :grid]
+            pd[d, t] = df_dem_sol[idx, :Consumption]
+            ps[d, t] = df_dem_sol[idx, :Solar]
         end
     end
-    start_date += Dates.Day(1)
+    start_date += Day(1)
 end
 
-# Define the time slots as a dictionary
+# Define the time slots for Time-of-Use (ToU) pricing
 time_slots = Dict(
     "Monday-Friday" => Dict(
         "Super Off-Peak" => [(0, 6), (10, 14)],
@@ -72,7 +63,7 @@ time_slots = Dict(
     )
 )
 
-# Initialize arrays to store charging and discharging times
+# Initialize arrays for charging and discharging times
 charging_times = zeros(24)
 discharging_times = zeros(24)
 
@@ -81,14 +72,12 @@ for slot in values(time_slots)
     for (period, times) in slot
         if period in ["Super Off-Peak", "Off-Peak"]
             for (start, stop) in times
-                # Ensure the indices stay within the bounds of the vector
                 start_idx = max(1, start)
                 stop_idx = min(24, stop)
                 charging_times[start_idx:stop_idx] .= 1
             end
         elseif period == "On-Peak"
             for (start, stop) in times
-                # Ensure the indices stay within the bounds of the vector
                 start_idx = max(1, start)
                 stop_idx = min(24, stop)
                 discharging_times[start_idx:stop_idx] .= 1
@@ -98,7 +87,6 @@ for slot in values(time_slots)
 end
 
 using Plots
-
 
 # Plot charging and discharging times
 plot(

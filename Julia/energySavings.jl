@@ -1,5 +1,3 @@
-cd("C:\\Users\\alexr\\OneDrive\\Documents\\GitHub\\Senior_design_A_VAM2S_Solar_System\\Folder1")
-
 import Pkg
 
 pwd()
@@ -71,19 +69,25 @@ spending_with_batteries = Dict(
     "Year - Sodium-ion" => 0.0
 )
 
-# Calculate yearly spending without battery for the whole year
+# Function to calculate yearly spending
 function calculate_yearly_spending(rates, super_off_peak_kWh, off_peak_kWh, on_peak_kWh)
     return (rates["Super Off-Peak"] * super_off_peak_kWh +
             rates["Off-Peak"] * off_peak_kWh +
             rates["On-Peak"] * on_peak_kWh) * 365
 end
 
-# Calculate yearly spending with batteries for winter and summer
+# Calculate yearly spending without and with batteries for winter and summer
 for (season, season_rates) in [("Year", Dict("Super Off-Peak" => 0.5 * (winter_rates["Super Off-Peak"] + summer_rates["Super Off-Peak"]),
                                              "Off-Peak" => 0.5 * (winter_rates["Off-Peak"] + summer_rates["Off-Peak"]),
                                              "On-Peak" => 0.5 * (winter_rates["On-Peak"] + summer_rates["On-Peak"])))]
+
     for (bat_type, efficiency) in bat_efficiency
-        battery_cost = calculate_yearly_spending(season_rates, super_off_peak_kWh * efficiency, off_peak_kWh * efficiency, on_peak_kWh * efficiency)
+        battery_cost = calculate_yearly_spending(
+            season_rates, 
+            super_off_peak_kWh * efficiency, 
+            off_peak_kWh * efficiency, 
+            on_peak_kWh * efficiency
+        )
         spending_with_batteries["$season - $bat_type"] += battery_cost
     end
 end
@@ -95,32 +99,22 @@ savings_sodium_ion = spending_with_batteries["Year - None"] - spending_with_batt
 # Create the bar plot
 p = bar(["None", "Lithium-ion", "Sodium-ion"], 
         [spending_with_batteries["Year - None"], spending_with_batteries["Year - Lithium-ion"], spending_with_batteries["Year - Sodium-ion"]],
-        labels = false, # Disables automatic labeling to customize annotations
         xlabel = "Battery Type", 
         ylabel = "Yearly Spending (\$)",
-        title = "Yearly Spending Comparison")
+        title = "Yearly Spending Comparison",
+        legend = false)
 
-# Slightly adjust the x-coordinate for the spending annotations to move them to the right
-x_positions = [0, 1, 2] # Bar positions
-x_offset = 0.5 # Slight offset to the right
-
-# Calculate the y positions for the spending annotations based on the bar heights
-bar_heights = [spending_with_batteries["Year - None"], spending_with_batteries["Year - Lithium-ion"], spending_with_batteries["Year - Sodium-ion"]]
-
-# Annotate each bar with its max spending value, positioned slightly to the right
-for (i, height) in enumerate(bar_heights)
-    annotate!(p, [(x_positions[i] + x_offset, height, text("\$$(round(height, digits=2))", :center, 10))])
+# Annotate each bar with its spending value
+for (i, label) in enumerate(["None", "Lithium-ion", "Sodium-ion"])
+    annotate!(p, i, spending_with_batteries["Year - $label"], text("\$$(round(spending_with_batteries["Year - $label"], digits=2))", :center))
 end
 
 display(p)
 
 # Show savings and spending
 println("\nSpending Comparison:")
-println("No Battery: \$$(spending_with_batteries["Year - None"])")
-println("With Lithium-ion Battery: \$$(spending_with_batteries["Year - Lithium-ion"])")
-println("With Sodium-ion Battery: \$$(spending_with_batteries["Year - Sodium-ion"])")
-println("\nSavings with Lithium-ion Battery: \$$(savings_lithium_ion)")
-println("Savings with Sodium-ion Battery: \$$(savings_sodium_ion)")
-
-
-
+println("No Battery: \$$(round(spending_with_batteries["Year - None"], digits=2))")
+println("With Lithium-ion Battery: \$$(round(spending_with_batteries["Year - Lithium-ion"], digits=2))")
+println("With Sodium-ion Battery: \$$(round(spending_with_batteries["Year - Sodium-ion"], digits=2))")
+println("\nSavings with Lithium-ion Battery: \$$(round(savings_lithium_ion, digits=2))")
+println("Savings with Sodium-ion Battery: \$$(round(savings_sodium_ion, digits=2))")
