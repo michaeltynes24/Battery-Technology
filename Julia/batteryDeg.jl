@@ -1,11 +1,9 @@
 import Pkg
+
 Pkg.activate(".")
 Pkg.instantiate()
-Pkg.status()
 
-using JuMP
-using GLPK
-using Plots
+using JuMP, GLPK
 
 # Parameters
 S_base = 1e3  # 1 kVA base power
@@ -92,21 +90,3 @@ function battery_lifetime(bat_flag::Int, α::Vector{Float64}, η_bat::Float64, p
 
     return battery_degradation
 end
-
-# Example Usage
-bat_flag_li = 1  # Li-ion battery
-η_bat_li = 0.85  # Efficiency of Li-ion battery
-years = 20       # Calculate battery lifetime over 20 years
-
-# Assume `pd` (demand) and `ps_max` (solar) are populated matrices
-battery_degradation_li = battery_lifetime(bat_flag_li, α, η_bat_li, pd, years)
-
-bat_flag_na = 2  # Na-ion battery
-η_bat_na = 0.9   # Efficiency of Na-ion battery
-battery_degradation_na = battery_lifetime(bat_flag_na, α, η_bat_na, pd, years)
-
-# Plot results
-plot(1:years, battery_degradation_li, label="Lithium-ion", xlabel="Years", ylabel="Degradation",
-    title="Battery Lifetime Over 20 Years", color=:blue, linewidth=2)
-plot!(1:years, battery_degradation_na, label="Sodium-ion", color=:red, linewidth=2)
-

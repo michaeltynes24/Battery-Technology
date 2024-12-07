@@ -5,18 +5,19 @@ import Grid from '@mui/material/Grid2';
 import api from '../api';
 
 const History = () => {
-  const [selectedRange, setSelectedRange] = useState(0);  // 0: 3 Months, 1: 6 Months, 2: 1 Year
-  const [data, setData] = useState([]);
-  const [processedData, setProcessedData] = useState([]);
+  const [selectedRange, setSelectedRange] = useState(0); // 0: 3 Months, 1: 6 Months, 2: 1 Year
+  const [data, setData] = useState([]); // Raw data from backend
+  const [processedData, setProcessedData] = useState([]); // Filtered data for selected range
   const [loading, setLoading] = useState(true);
 
-  // Fetch data
+  // Fetch aggregated energy data from the backend
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await api.get('/api/uploaded_files/');
-        setData(response.data);
+        const backendData = response.data.data || []; // Expecting aggregated data in 'data' field
+        setData(backendData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -29,64 +30,48 @@ const History = () => {
   useEffect(() => {
     if (!data.length) return;
 
-    // Group data by year-month (e.g., "2024-01" for January 2024)
-    const groupedData = data.reduce((acc, row) => {
-      const date = new Date(row.date);
-      const yearMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-      acc[yearMonth] = acc[yearMonth] ? acc[yearMonth] + parseFloat(row.net) : parseFloat(row.net);
-      return acc;
-    }, {});
-
-    // Convert grouped data into an array of objects
-    const aggregatedData = Object.entries(groupedData).map(([yearMonth, net]) => ({
-      date: yearMonth, // Store the "year-month" format
-      net,
-    }));
-
-    // Get current date for range filtering
     const now = new Date();
     let filteredData;
 
-    // Filter based on the selected range
+    // Filter data based on the selected range
     switch (selectedRange) {
-        case 0: // Last 3 months
-          filteredData = aggregatedData.filter(({ date }) => {
-            const [year, month] = date.split('-');
-            const rowDate = new Date(year, month - 1); // Convert year-month to Date
-            const threeMonthsAgo = new Date(); // Get the current date
-            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3); // Subtract 3 months
-            return rowDate >= threeMonthsAgo;
-          });
-          break;
-      
-        case 1: // Last 6 months
-          filteredData = aggregatedData.filter(({ date }) => {
-            const [year, month] = date.split('-');
-            const rowDate = new Date(year, month - 1); // Convert year-month to Date
-            const sixMonthsAgo = new Date(); // Get the current date
-            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6); // Subtract 6 months
-            return rowDate >= sixMonthsAgo;
-          });
-          break;
-      
-        case 2: // Last 1 year
-          filteredData = aggregatedData.filter(({ date }) => {
-            const [year, month] = date.split('-');
-            const rowDate = new Date(year, month - 1); // Convert year-month to Date
-            const oneYearAgo = new Date(); // Get the current date
-            oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1); // Subtract 1 year
-            return rowDate >= oneYearAgo;
-          });
-          break;
-      
-        default:
-          filteredData = aggregatedData;
-      }
-      
-    // Sort data by date (year-month)
+      case 0: // Last 3 months
+        filteredData = data.filter(({ date }) => {
+          const [year, month] = date.split('-');
+          const rowDate = new Date(year, month - 1); // Convert year-month to Date
+          const threeMonthsAgo = new Date();
+          threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+          return rowDate >= threeMonthsAgo;
+        });
+        break;
+
+      case 1: // Last 6 months
+        filteredData = data.filter(({ date }) => {
+          const [year, month] = date.split('-');
+          const rowDate = new Date(year, month - 1);
+          const sixMonthsAgo = new Date();
+          sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+          return rowDate >= sixMonthsAgo;
+        });
+        break;
+
+      case 2: // Last 1 year
+        filteredData = data.filter(({ date }) => {
+          const [year, month] = date.split('-');
+          const rowDate = new Date(year, month - 1);
+          const oneYearAgo = new Date();
+          oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+          return rowDate >= oneYearAgo;
+        });
+        break;
+
+      default:
+        filteredData = data;
+    }
+
+    // Sort the filtered data by date
     filteredData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    // Set the processed data
     setProcessedData(filteredData);
   }, [data, selectedRange]);
 
@@ -103,8 +88,6 @@ const History = () => {
         return '';
     }
   };
-
-
 
   return (
     <Grid container sx={{ height: '100vh', paddingTop: '5%', backgroundColor: 'transparent' }}>
