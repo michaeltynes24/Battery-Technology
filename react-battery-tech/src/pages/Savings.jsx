@@ -2,26 +2,45 @@ import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Box, Tabs, Tab, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
-const yearlyData = {
-  1: [
-    { name: 'None', spending: 2000 },
-    { name: 'Lithium-Ion', spending: 1200 },
-    { name: 'Sodium-Ion', spending: 1500 },
-  ],
-  5: [
-    { name: 'None', spending: 10000 },
-    { name: 'Lithium-Ion', spending: 6000 },
-    { name: 'Sodium-Ion', spending: 7500 },
-  ],
-  10: [
-    { name: 'None', spending: 20000 },
-    { name: 'Lithium-Ion', spending: 12000 },
-    { name: 'Sodium-Ion', spending: 15000 },
-  ],
-};
+
+
+
 
 const Savings = () => {
-  const [yearRange, setYearRange] = useState(1); // Default range: 1 year
+    const [savings,setSavings] = useState([]);
+
+    const yearlyData = {
+      1: [
+        { name: 'None', spending: Math.round(savings.noBattery*100)/100 },
+        { name: 'Lithium-Ion', spending: Math.round(savings.LI_spending*100)/100 },
+        { name: 'Sodium-Ion', spending: Math.round(savings.NA_spending*100)/100 },
+      ],
+      5: [
+        { name: 'None', spending: Math.round(savings.noBattery*5*100)/100 },
+        { name: 'Lithium-Ion', spending: Math.round(savings.LI_spending*5*100)/100 },
+        { name: 'Sodium-Ion', spending: Math.round(savings.NA_spending*5*100)/100 },
+      ],
+      10: [
+        { name: 'None', spending: Math.round(savings.noBattery*10*100)/100 },
+        { name: 'Lithium-Ion', spending: Math.round(savings.LI_spending*10*100)/100 },
+        { name: 'Sodium-Ion', spending: Math.round(savings.NA_spending*10*100)/100 },
+      ],
+    };
+    
+    fetch("http://127.0.0.1:8081/api/savings/", {
+        method:"GET",
+        headers:{
+            "Content-Type": "application/json",
+        },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        setSavings(data)
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  
+    const [yearRange, setYearRange] = useState(1); // Default range: 1 year
 
   // Handle tab change
   const handleTabChange = (event, newValue) => {
@@ -30,12 +49,12 @@ const Savings = () => {
 
   // Calculate the maximum spending value for the selected year range
   const maxSpending = Math.max(...yearlyData[yearRange].map(item => item.spending));
-  const paddedMaxSpending = Math.ceil(maxSpending * 1.1); // Add 10% padding
+  const paddedMaxSpending = Math.ceil(maxSpending /100) *110; // Add 10% padding
 
   // Calculate the money saved for each battery type
   const savingsData = yearlyData[yearRange].map(item => ({
     name: item.name,
-    saved: maxSpending - item.spending,
+    saved: Math.round((maxSpending - item.spending)*100)/100,
   }));
 
   return (
