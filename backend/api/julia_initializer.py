@@ -1,12 +1,19 @@
 from julia.api import Julia
 from julia import Main
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def initialize_julia():
     try:
         # Initialize Julia
+        logger.info("Initializing Julia...")
         jl = Julia(compiled_modules=False)
 
         # Ensure required packages are installed
+        logger.info("Ensuring required Julia packages are installed...")
         Main.eval("""
         import Pkg
 
@@ -40,12 +47,15 @@ def initialize_julia():
         """)
 
         # Include Julia scripts
+        logger.info("Including Julia scripts...")
         Main.include(r"C:\\Users\\alexr\\OneDrive\\Documents\\GitHub\\Battery-Technology\\Julia\\energySavings.jl")
         Main.include(r"C:\\Users\\alexr\\OneDrive\\Documents\\GitHub\\Battery-Technology\\Julia\\Ch_DisCh.jl")
         Main.include(r"C:\\Users\\alexr\\OneDrive\\Documents\\GitHub\\Battery-Technology\\Julia\\batteryTest.jl")
         Main.include(r"C:\\Users\\alexr\\OneDrive\\Documents\\GitHub\\Battery-Technology\\Julia\\batteryFunction.jl")
         Main.include(r"C:\\Users\\alexr\\OneDrive\\Documents\\GitHub\\Battery-Technology\\Julia\\batteryDeg.jl")
 
+        logger.info("Julia initialized successfully.")
         return Main
     except Exception as e:
+        logger.error(f"Failed to initialize Julia: {e}", exc_info=True)
         raise RuntimeError(f"Failed to initialize Julia: {e}")
