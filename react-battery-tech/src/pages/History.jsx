@@ -10,6 +10,8 @@ const History = () => {
   const [processedData, setProcessedData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
+
   // Fetch data
   useEffect(() => {
     const fetchData = async () => {

@@ -55,7 +55,7 @@ for d in D
             ps[d, t] = df_dem_sol[idx, :grid]
         end
     end
-    start_date += Dates.Day(1)
+    global start_date += Dates.Day(1)
 end
 
 # Define the time slots as a dictionary
