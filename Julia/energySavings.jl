@@ -15,28 +15,36 @@ using JSON
 
 
 ################# fetch data & get avg #######################
-url = "http://127.0.0.1:8000/api/uploaded_files/"  # Replace with your actual base URL
-BEARER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzNzMyNDA3LCJpYXQiOjE3MzM3MjUyMDcsImp0aSI6IjkyMGQ0YTUwYzg5YjQ3ODQ4ODlhYWM5MjczZWIwZTZhIiwidXNlcl9pZCI6M30.BpZJw4cCHN85QxWUj02ASHfAtfZidUdPLGkpfIWgPNo"
-headers = ["Authorization" => "Bearer $BEARER_TOKEN"]
-global total_daily_kWh = 0;
-try
-    response = HTTP.get(url, headers)
-    if response.status == 200
-        data = JSON.parse(String(response.body))
-        global net_values
-        net_values = []
-        for d in data
-            push!(net_values, parse(Float64, d["net"]))
+function fetchData(token)
+    url = "http://127.0.0.1:8000/api/uploaded_files/"
+    #headers = Dict("Authorization" => "Bearer $token")  # Convert to a dictionary
+
+    global total_daily_kWh = 0
+
+    try
+        response = HTTP.get(url, headers)
+
+        if response.status == 200
+            data = JSON.parse(String(response.body))
+
+            # Safely extract "net" values
+            net_values = Float64[]
+            for d in data
+                if haskey(d, "net") && !isnothing(d["net"])
+                    push!(net_values, parse(Float64, d["net"]))
+                else
+                    println("Warning: Missing 'net' value in data entry.")
+                end
+            end
+            # Additional logic continues...
+        else
+            println("Request failed with status: ", response.status)
         end
-        println(net_values)
-        num_days = length(net_values) / 24
-        global total_daily_kWh = sum(net_values) / num_days # get the usage per day over the data
-    else
-        println("Error: API request failed with status code $(response.status)")
+    catch e
+        println("Error fetching data: ", e)
     end
-catch e
-    println("Error: $e")
 end
+
 
 ####################################################
 
@@ -172,9 +180,20 @@ function handle_request(req::HTTP.Request)
         return HTTP.Response(200, [
             "Access-Control-Allow-Origin" => "*",
             "Access-Control-Allow-Methods" => "GET",
-            "Access-Control-Allow-Headers" => "Content-Type"
+            "Access-Control-Allow-Headers" => "Content-Type, Authorization"
         ])
     end
+
+    # Extract the "Authorization" header
+    auth_token = HTTP.get(req.headers, "Authorization", nothing)
+    
+    if auth_token === nothing
+        return HTTP.Response(401, "Unauthorized: Missing token")
+    else
+        println("Token received: ", auth_token)  # Log the token to the console
+        return HTTP.Response(200, "Token received successfully!")
+    end  # Log the token for debugging
+    fetchData(auth_token)
 
     # Handle GET request for the /api/savings endpoint
     if HTTP.method(req) == "GET" && req.target == "/api/savings/"
