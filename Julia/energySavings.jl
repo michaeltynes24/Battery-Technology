@@ -1,51 +1,33 @@
-#cd("C:\\Users\\alexr\\OneDrive\\Documents\\GitHub\\Senior_design_A_VAM2S_Solar_System\\Folder1")
-
-import Pkg
-
-pwd()
-Pkg.activate(".")
-Pkg.instantiate()
-Pkg.status()
-Pkg.add("Plots")
-
 using Plots
 using Dates
 using HTTP
 using JSON
 
-
 ################# fetch data & get avg #######################
-function fetchData(token)
-    url = "http://127.0.0.1:8000/api/uploaded_files/"
-    #headers = Dict("Authorization" => "Bearer $token")  # Convert to a dictionary
-
+function fetchData(auth_token::String)  # Accept token as an argument
+    url = "http://127.0.0.1:8000/api/uploaded_files/"  # Replace with your actual base URL
+    headers = ["Authorization" => "Bearer $auth_token"]
     global total_daily_kWh = 0
-
     try
         response = HTTP.get(url, headers)
-
         if response.status == 200
             data = JSON.parse(String(response.body))
-
-            # Safely extract "net" values
-            net_values = Float64[]
+            global net_values
+            net_values = []
             for d in data
-                if haskey(d, "net") && !isnothing(d["net"])
-                    push!(net_values, parse(Float64, d["net"]))
-                else
-                    println("Warning: Missing 'net' value in data entry.")
-                end
+                push!(net_values, parse(Float64, d["net"]))
             end
-            # Additional logic continues...
+            println(net_values)
+            println(auth_token)
+            num_days = length(net_values) / 24
+            global total_daily_kWh = sum(net_values) / num_days # get the usage per day over the data
         else
-            println("Request failed with status: ", response.status)
+            println("Error: API request failed with status code $(response.status)")
         end
     catch e
-        println("Error fetching data: ", e)
+        println("Error: $e")
     end
 end
-
-
 ####################################################
 
 function process_savings_data()
@@ -121,6 +103,7 @@ function process_savings_data()
     for (season, season_rates) in [("Year", Dict("Super Off-Peak" => 0.5 * (winter_rates["Super Off-Peak"] + summer_rates["Super Off-Peak"]),
                                                 "Off-Peak" => 0.5 * (winter_rates["Off-Peak"] + summer_rates["Off-Peak"]),
                                                 "On-Peak" => 0.5 * (winter_rates["On-Peak"] + summer_rates["On-Peak"])))]
+
         for (bat_type, efficiency) in bat_efficiency
             battery_cost = calculate_yearly_spending(season_rates, super_off_peak_kWh * efficiency, off_peak_kWh * efficiency, on_peak_kWh * efficiency)
             spending_with_batteries["$season - $bat_type"] += battery_cost
@@ -151,10 +134,8 @@ function process_savings_data()
         annotate!(p, [(x_positions[i] + x_offset, height, text("\$$(round(height, digits=2))", :center, 10))])
     end
 
-    #display(p)
-
     # Show savings and spending
-   # println("\nSpending Comparison:")
+   # println("\nSpending Comparison:") 
    # println("No Battery: \$$(spending_with_batteries["Year - None"])")
    # println("With Lithium-ion Battery: \$$(spending_with_batteries["Year - Lithium-ion"])")
    # println("With Sodium-ion Battery: \$$(spending_with_batteries["Year - Sodium-ion"])")
@@ -179,37 +160,32 @@ function handle_request(req::HTTP.Request)
     if HTTP.method(req) == "OPTIONS"
         return HTTP.Response(200, [
             "Access-Control-Allow-Origin" => "*",
-            "Access-Control-Allow-Methods" => "GET",
+            "Access-Control-Allow-Methods" => "GET,POST,OPTIONS",
             "Access-Control-Allow-Headers" => "Content-Type, Authorization"
         ])
     end
 
-    # Extract the "Authorization" header
-    auth_token = HTTP.get(req.headers, "Authorization", nothing)
-    
-    if auth_token === nothing
-        return HTTP.Response(401, "Unauthorized: Missing token")
-    else
-        println("Token received: ", auth_token)  # Log the token to the console
-        return HTTP.Response(200, "Token received successfully!")
-    end  # Log the token for debugging
-    fetchData(auth_token)
+    # Extract Authorization header
+    headers = req.headers  # This will be a Vector{Pair{SubString{String}, SubString{String}}}
+    app_header = headers[4] # Bearer & token
+    token = String(split(app_header[2], " ")[2]) # extract token
+    println(token)
+    # Fetch data using the extracted token
+     fetchData(token)
 
-    # Handle GET request for the /api/savings endpoint
-    if HTTP.method(req) == "GET" && req.target == "/api/savings/"
-        # Process and get savings data
-        savings_data = process_savings_data()
-        
-        # Convert savings data to JSON and return the response
-        return HTTP.Response(200, ["Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json"], JSON.json(savings_data))
-    end
+    # # Handle GET request for the /api/savings endpoint
+     if HTTP.method(req) == "GET" && req.target == "/api/savings/"
+         # Process and get savings data
+         savings_data = process_savings_data()
 
-    # Fallback for unsupported requests
-    return HTTP.Response(405, ["Access-Control-Allow-Origin" => "*"], "Method Not Allowed")
+         # Convert savings data to JSON and return the response
+         return HTTP.Response(200, ["Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json"], JSON.json(savings_data))
+     end
+
+     # Fallback for unsupported requests
+     return HTTP.Response(405, ["Access-Control-Allow-Origin" => "*"], "Method Not Allowed")
 end
+
 
 # Start the HTTP server
 HTTP.serve(handle_request, "0.0.0.0", 8081)
-
-
-
