@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Box, Tabs, Tab, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-
-
-
+import {ACCESS_TOKEN} from '../constants.js'
 
 
 const Savings = () => {
@@ -27,18 +25,30 @@ const Savings = () => {
       ],
     };
     
-    fetch("http://127.0.0.1:8081/api/savings/", {
-        method:"GET",
-        headers:{
-            "Content-Type": "application/json",
-        },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        setSavings(data)
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+
+    useEffect(() => {
+
+    
+        // Fetch data with the Authorization header
+        fetch('http://127.0.0.1:8081/api/savings/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${token}`, 
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Failed to fetch savings data');
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            setSavings(data);
+          })
+          .catch((error) => console.error('Error fetching data:', error));
+      },[]);
   
     const [yearRange, setYearRange] = useState(1); // Default range: 1 year
 
