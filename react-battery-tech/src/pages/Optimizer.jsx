@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import api from '../api';
+import DegradationGraph from '../components/DegradationGraph';
 
 function fillData(utility) {
   const data = [
@@ -82,7 +83,7 @@ const Optimizer = () => {
   };
 
   return (
-    <Grid container sx={{ minHeight: '100vh', maxHeight: '150vh', backgroundColor: 'transparent', paddingY: '5%' }}>
+    <Grid container sx={{ minHeight: '100vh', maxHeight: '250vh', backgroundColor: 'transparent', paddingY: '5%' }}>
       <Typography sx={{ fontSize: 40, mb: 10, borderBottom: 'solid', width: '100%', justifyContent: 'center', display: 'flex' }}>
         Optimizer Tool
       </Typography>
@@ -101,9 +102,10 @@ const Optimizer = () => {
           </ResponsiveContainer>
         </Box>
       </Grid>
+      <DegradationGraph />
 
       {/* Table */}
-      <Grid size={12} sx={{ height: '100%' }}>
+      <Grid size={12} sx={{ mt: 20, height: '100%' }}>
         <Box sx={{ height: '50%', width: '100%', backgroundColor: 'lightgrey', padding: '20px', display: 'flex' }}>
           <TableContainer component={Paper}>
             <Table aria-label="charging discharging times table">

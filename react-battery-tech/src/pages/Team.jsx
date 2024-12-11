@@ -1,31 +1,38 @@
 import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import Alex from '../../../files/Alex.png'
+import Vishal from '../../../files/Vishal.png'
+import Michael from '../../../files/Michael.png'
+import Maria from '../../../files/Maria.png'
+import Steven from '../../../files/Steven.png'
+
+
 const teamMembers = [
   {
     name: 'Alex Rivera (Team Leader)',
-    bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eveniet inventore ipsum distinctio minima suscipit temporibus sit vero, quam laudantium earum tempore veritatis, dignissimos doloribus exercitationem aspernatur sint laboriosam? Odit ducimus dolorem consectetur eaque deserunt iusto velit. Obcaecati, inventore, harum quod soluta quidem sunt explicabo, pariatur officiis quisquam rem amet!",
-    image: 'https://via.placeholder.com/150', // Replace with actual image URL
+    bio: "San Diego State University",
+    image: Alex,
   },
   {
     name: 'Michael Tynes',
-    bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eveniet inventore ipsum distinctio minima suscipit temporibus sit vero, quam laudantium earum tempore veritatis, dignissimos doloribus exercitationem aspernatur sint laboriosam? Odit ducimus dolorem consectetur eaque deserunt iusto velit. Obcaecati, inventore, harum quod soluta quidem sunt explicabo, pariatur officiis quisquam rem amet!",
-    image: 'https://via.placeholder.com/150', // Replace with actual image URL
-  },
+    bio: "Denver CO, San Diego State University - Computer Engineering Front/Backend development team After graduation Michael will continue as an Aviation Electronics Technician before upgrading into an engineering role.",
+    image: Michael
+    },
   {
     name: 'Steven Busse',
-    bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eveniet inventore ipsum distinctio minima suscipit temporibus sit vero, quam laudantium earum tempore veritatis, dignissimos doloribus exercitationem aspernatur sint laboriosam? Odit ducimus dolorem consectetur eaque deserunt iusto velit. Obcaecati, inventore, harum quod soluta quidem sunt explicabo, pariatur officiis quisquam rem amet!",
-    image: 'https://via.placeholder.com/150', // Replace with actual image URL
+    bio: " Glendora CA, San Diego State University - Computer Engineering, After graduation Steven will be continuing his job at Renewable Energy Solutions as a Renewable Applications Engineer",
+    image: Steven,
   },
   {
     name: 'Maria Dawood',
-    bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eveniet inventore ipsum distinctio minima suscipit temporibus sit vero, quam laudantium earum tempore veritatis, dignissimos doloribus exercitationem aspernatur sint laboriosam? Odit ducimus dolorem consectetur eaque deserunt iusto velit. Obcaecati, inventore, harum quod soluta quidem sunt explicabo, pariatur officiis quisquam rem amet!",
-    image: 'https://via.placeholder.com/150', // Replace with actual image URL
+    bio: "San Diego CA, San Diego State University - Electrical Engineering, After graduation Maria will be continuing to work at Helix Electric as a Project Engineer",
+    image: Maria,
   },
   {
     name: 'Vishal Kipadia',
-    bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eveniet inventore ipsum distinctio minima suscipit temporibus sit vero, quam laudantium earum tempore veritatis, dignissimos doloribus exercitationem aspernatur sint laboriosam? Odit ducimus dolorem consectetur eaque deserunt iusto velit. Obcaecati, inventore, harum quod soluta quidem sunt explicabo, pariatur officiis quisquam rem amet!",
-    image: 'https://via.placeholder.com/150', // Replace with actual image URL
+    bio: "San Diego CA, San Diego State University - Computer Engineering, After graduation Vishal will continue his education to a masters degree in Computer Engineering",
+    image: Vishal,
   },
 ];
 
