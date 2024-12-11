@@ -1,113 +1,118 @@
+using HTTP
+using JSON
+using Dates
+using CSV
+using DataFrames
 
-import Pkg
-
-pwd()
-Pkg.activate(".")
-Pkg.instantiate()
-Pkg.status()
-Pkg.add("Plots")
-
-using JuMP
-using GLPK
-using Ipopt
-using CSV, DataFrames
-using Dates,Statistics
-
-# Read the CSV file
-csv_reader = CSV.File("15minute_data_california.csv")
-df = DataFrame(csv_reader)
-
-# Sort the DataFrame by local_15min
-df_sorted = sort(df, order(:local_15min))
-
-# Select relevant columns
-df_dem_sol = df_sorted[:, [:dataid, :local_15min, :grid, :solar]]
-
-# Extract year from local_15min and filter by year 2018
-df_dem_sol[!,:year] = [parse(Int, chop(row.local_15min, head=0, tail=18)) for row in eachrow(df_dem_sol)]
-df_dem_sol = filter(row -> row.year == 2018, df_dem_sol)
-
-# Filter by dataid 1731
-df_dem_sol = filter(row -> row.dataid == 1731, df_dem_sol)
-
-# Define start date
-start_date = DateTime(2018, 1, 1, 1, 0)
-
-# Define ranges for days and hours
-D = 1:365
-T = 1:24
-
-# Initialize arrays for solar and grid data
-pd = zeros(length(D), length(T))  # solar availability
-ps = zeros(length(D), length(T))
-
-# Iterate over each date and time, populating solar and grid data arrays
-for d in D
-    for t in T
-        # Calculate the target datetime for the current iteration
-        target_datetime = start_date + Dates.Hour(t - 1)
-        
-        # Find the index of the row in df_dem_sol corresponding to the target datetime
-        idx = findfirst(datetime -> datetime == target_datetime, df_dem_sol.local_15min)
-        
-        if !isnothing(idx)
-            pd[d, t] = df_dem_sol[idx, :solar]
-            ps[d, t] = df_dem_sol[idx, :grid]
+################# fetch data & get avg #######################
+function fetchData(auth_token::String)
+    url = "http://127.0.0.1:8000/api/uploaded_files/"  # Replace with your actual base URL
+    headers = ["Authorization" => "Bearer $auth_token"]
+    global total_daily_kWh = 0
+    try
+        response = HTTP.get(url, headers)
+        if response.status == 200
+            data = JSON.parse(String(response.body))
+            global net_values
+            net_values = []
+            global consumption_data
+            consumption_data = []
+            global date_time_data
+            date_time_data = []
+            for d in data
+                push!(net_values, parse(Float64, d["net"]))
+                push!(consumption_data, parse(Float64, d["consumption"]))
+                push!(date_time_data, DateTime(d["date"] * " " * d["time"], "yyyy-mm-dd HH:MM AMPM"))
+            end
+            println(net_values)
+            println(auth_token)
+            num_days = length(net_values) / 24
+            global total_daily_kWh = sum(net_values) / num_days  # Average daily usage
+        else
+            println("Error: API request failed with status code $(response.status)")
         end
+    catch e
+        println("Error: $e")
     end
-    global start_date += Dates.Day(1)
 end
 
-# Define the time slots as a dictionary
-time_slots = Dict(
-    "Monday-Friday" => Dict(
-        "Super Off-Peak" => [(0, 6), (10, 14)],
-        "Off-Peak" => [(6, 10), (14, 16), (21, 24)],
-        "On-Peak" => [(16, 21)]
-    ),
-    "Weekends-Holidays" => Dict(
-        "Super Off-Peak" => [(0, 2)],
-        "Off-Peak" => [(14, 16), (21, 24)],
-        "On-Peak" => [(16, 21)]
+################# charging and discharging logic #######################
+function process_charging_discharging()
+    # Define peak time slots
+    on_peak_hours = 16:21
+    off_peak_hours = 6:16
+    super_off_peak_hours = 0:6
+
+    # Battery parameters
+    battery_capacity = 10.0  # kWh
+    charge_rate = 2.0        # kWh/hour
+    discharge_rate = 2.0     # kWh/hour
+    efficiency = 0.85        # Efficiency of battery
+
+    # Initialize battery state
+    battery_state = 0.0      # Current battery charge level in kWh
+
+    charging_schedule = Dict{DateTime, Float64}()
+    discharging_schedule = Dict{DateTime, Float64}()
+
+    for (i, dt) in enumerate(date_time_data)
+        consumption = consumption_data[i]
+
+        if hour(dt) in on_peak_hours && consumption > 1.5
+            # Discharge during On-Peak hours and when consumption > 1.5
+            discharge_amount = min(discharge_rate, battery_state)
+            battery_state -= discharge_amount
+            discharging_schedule[dt] = discharge_amount
+        elseif hour(dt) in off_peak_hours || hour(dt) in super_off_peak_hours
+            # Charge during Off-Peak and Super Off-Peak hours
+            charge_amount = min(charge_rate * efficiency, battery_capacity - battery_state)
+            battery_state += charge_amount
+            charging_schedule[dt] = charge_amount
+        else
+            # No action for other hours
+            charging_schedule[dt] = 0.0
+            discharging_schedule[dt] = 0.0
+        end
+    end
+
+    return Dict(
+        "charging_schedule" => charging_schedule,
+        "discharging_schedule" => discharging_schedule
     )
-)
-
-# Initialize arrays to store charging and discharging times
-charging_times = zeros(24)
-discharging_times = zeros(24)
-
-# Populate charging and discharging times based on the time slots
-for slot in values(time_slots)
-    for (period, times) in slot
-        if period in ["Super Off-Peak", "Off-Peak"]
-            for (start, stop) in times
-                # Ensure the indices stay within the bounds of the vector
-                start_idx = max(1, start)
-                stop_idx = min(24, stop)
-                charging_times[start_idx:stop_idx] .= 1
-            end
-        elseif period == "On-Peak"
-            for (start, stop) in times
-                # Ensure the indices stay within the bounds of the vector
-                start_idx = max(1, start)
-                stop_idx = min(24, stop)
-                discharging_times[start_idx:stop_idx] .= 1
-            end
-        end
-    end
 end
 
-using Plots
+########### define API endpoint ####################
+function handle_request(req::HTTP.Request)
+    # Handle OPTIONS request for CORS preflight
+    if HTTP.method(req) == "OPTIONS"
+        return HTTP.Response(200, [
+            "Access-Control-Allow-Origin" => "*",
+            "Access-Control-Allow-Methods" => "GET,POST,OPTIONS",
+            "Access-Control-Allow-Headers" => "Content-Type, Authorization"
+        ])
+    end
 
+    # Extract Authorization header
+    headers = req.headers
+    app_header = headers[4]  # Bearer & token
+    token = String(split(app_header[2], " ")[2])  # Extract token
+    println(token)
 
-# Plot charging and discharging times
-plot(
-    1:24, charging_times, label="Charging",
-    xlabel="Hour of the Day", ylabel="Charging/Discharging",
-    title="Charging and Discharging Times in a 24-hour Period",
-    color=:blue, linewidth=2, linestyle=:dash
-)
-plot!(
-    1:24, discharging_times, label="Discharging",
-    color=:red, linewidth=2, linestyle=:dash
-)
+    # Fetch data using the extracted token
+    fetchData(token)
+
+    # Handle GET request for the /api/savings endpoint
+    if HTTP.method(req) == "GET" && req.target == "/api/charging/"
+        # Process charging and discharging data
+        charging_discharging_data = process_charging_discharging()
+
+        # Convert data to JSON and return the response
+        return HTTP.Response(200, ["Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json"], JSON.json(charging_discharging_data))
+    end
+
+    # Fallback for unsupported requests
+    return HTTP.Response(405, ["Access-Control-Allow-Origin" => "*"], "Method Not Allowed")
+end
+
+# Start the HTTP server
+HTTP.serve(handle_request, "0.0.0.0", 8081)

@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import api from '../api';
+import { ACCESS_TOKEN } from '../constants';
 
 function fillData(utility) {
   const data = [
@@ -61,10 +62,27 @@ const Optimizer = () => {
   const [utility, setUtility] = useState('');
   const [data, setData] = useState([]);
   const [chargingData, setChargingData] = useState([]);
+  const [charging, setCharging] = useState([]);
+  const token=localStorage.getItem(ACCESS_TOKEN)
+  
+// Fetch data when the component mounts
+useEffect(() => {
+  console.log(token)
+  fetch("http://127.0.0.1:8081/api/charging/", {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, 
 
-  useEffect(() => {
-    fetchData();
-  }, []); // Empty dependency array to run the effect once on mount
+      },
+  })
+      .then((response) => response.json())
+      .then((data) => {
+          console.log(data); // For debugging, you can remove this later
+          setCharging(data);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+}, []); // Empty dependency array ensures the fetch is called only once when the component mounts
 
   const fetchData = () => {
     api
