@@ -11,7 +11,7 @@ import Steven from '../../../files/Steven.png'
 const teamMembers = [
   {
     name: 'Alex Rivera (Team Leader)',
-    bio: "San Diego State University",
+    bio: "Escondido CA, San Diego State University - Computer Engineering, After graudation Alex will be working at LPL Financial as a Change Management Engineer",
     image: Alex,
   },
   {
