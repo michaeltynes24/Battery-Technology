@@ -8,24 +8,26 @@ import api from '../api';
 import DegradationGraph from '../components/DegradationGraph';
 
 function fillData(utility) {
-  const data = [
-    { time: '00:00', percentage: utility === "SDGE" ? 40 : 40 },
-    { time: '02:00', percentage: utility === "SDGE" ? 60 : 70 },
-    { time: '03:00', percentage: utility === "SDGE" ? 70 : 90 },
-    { time: '04:00', percentage: utility === "SDGE" ? 80 : 95 },
-    { time: '06:00', percentage: utility === "SDGE" ? 85 : 100 },
-    { time: '08:00', percentage: utility === "SDGE" ? 90 : 100 },
-    { time: '10:00', percentage: utility === "SDGE" ? 95 : 100 },
-    { time: '12:00', percentage: utility === "SDGE" ? 100 : 100 },
-    { time: '14:00', percentage: utility === "SDGE" ? 100 : 100 },
-    { time: '16:00', percentage: utility === "SDGE" ? 100 : 100 },
-    { time: '18:00', percentage: utility === "SDGE" ? 70 : 70 },
-    { time: '20:00', percentage: utility === "SDGE" ? 40 : 40 },
-    { time: '21:00', percentage: utility === "SDGE" ? 10 : 10 },
-    { time: '22:00', percentage: utility === "SDGE" ? 20 : 20 },
-    { time: '23:00', percentage: utility === "SDGE" ? 30 : 30 },
-    { time: '24:00', percentage: utility === "SDGE" ? 40 : 40 },
-  ];
+    const data = [
+        { time: '00:00', percentage: 80 }, // Idle at 80%
+        { time: '02:00', percentage: 80 },
+        { time: '04:00', percentage: 80 },
+        { time: '06:00', percentage: 80 },
+        { time: '08:00', percentage: 80 },
+        { time: '10:00', percentage: 80 },
+        { time: '12:00', percentage: 80 },
+        { time: '14:00', percentage: 80 },
+        { time: '16:00', percentage: 80 }, // Start of discharge
+        { time: '17:00', percentage: 70 }, // Gradual discharge
+        { time: '18:00', percentage: 60 },
+        { time: '19:00', percentage: 50 },
+        { time: '20:00', percentage: 40 },
+        { time: '21:00', percentage: 30 }, // End of discharge window
+        { time: '22:00', percentage: 40 }, // Gradual recharge starts
+        { time: '23:00', percentage: 60 },
+        { time: '24:00', percentage: 80 }, // Fully recharged to idle at 80%
+      ];
+      
 
   // Create chargingData based on the percentage increase/decrease
   const chargingData = [];

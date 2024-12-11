@@ -1,42 +1,56 @@
-import React from 'react';
-import { Line } from 'react-chartjs-2';
-import { Container, Typography, Box } from '@mui/material';
-import { Chart as ChartJS, LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
+import React, { useState } from "react";
+import { Line } from "react-chartjs-2";
+import { Container, Typography, Box, Button } from "@mui/material";
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-// Register Chart.js components
-ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+// Import the zoom plugin
+import zoomPlugin from "chartjs-plugin-zoom";
+
+// Register Chart.js components and plugins
+ChartJS.register(
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  Title,
+  Tooltip,
+  Legend,
+  zoomPlugin
+);
 
 const DegradationGraph = () => {
+  const [isLogarithmic, setIsLogarithmic] = useState(true); // State to toggle axis type
+
   // Constants for the degradation formula
-  const C0 = 150; // Initial capacity (e.g., 150%)
-  const k = 0.002; // Degradation rate (per cycle, a small value)
-  
+  const C0 = 100; // Initial battery capacity (%)
+  const totalCycles = 6000; // Total cycles for 20% degradation
+  const k = 0.20 / totalCycles; // Degradation rate per cycle
+
   // Generate degradation data using the formula: C(t) = C0 * (1 - k * t)
-  const degradationData = Array.from({ length: 101 }, (_, index) => C0 * (1 - k * index));
-  
-  // Generate step data by setting values at every 10th cycle
-  const stepData = degradationData.map((value, index) => (index % 10 === 0 ? value : null));
+  const degradationData = Array.from({ length: totalCycles + 1 }, (_, t) => C0 * (1 - k * t));
 
   // Chart.js data object
   const data = {
-    labels: Array.from({ length: 101 }, (_, index) => index),  // Time/Cycles (0 to 100)
+    labels: Array.from({ length: totalCycles + 1 }, (_, t) => t), // X-axis: cycles
     datasets: [
       {
-        label: 'Degradation Graph',
+        label: "Battery Capacity",
         data: degradationData,
-        borderColor: 'orange',
-        backgroundColor: 'rgba(255, 165, 0, 0.3)',
+        borderColor: "orange",
+        backgroundColor: "rgba(255, 165, 0, 0.3)",
         fill: true,
-        tension: 0.4,  // Smooth curve
-      },
-      {
-        label: 'Step Graph',
-        data: stepData,
-        borderColor: 'orange',
-        backgroundColor: 'rgba(255, 165, 0, 0.3)',
-        fill: false,
-        borderDash: [5, 5],  // Dashed line
-        tension: 0,  // No smooth curve
+        tension: 0.4, // Smooth curve
       },
     ],
   };
@@ -47,37 +61,66 @@ const DegradationGraph = () => {
     plugins: {
       title: {
         display: true,
-        text: 'Battery Degradation and Step Graph Over Time',
+        text: `Battery Degradation Over Time (${isLogarithmic ? "Logarithmic" : "Linear"} X-Axis)`,
         font: { size: 18 },
       },
-      tooltip: {
-        callbacks: {
-          label: (tooltipItem) => `${tooltipItem.dataset.label}: ${tooltipItem.raw.toFixed(2)}%`,
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: "x", // Pan along X-axis only
+        },
+        zoom: {
+          wheel: {
+            enabled: true, // Enable zoom on mouse wheel
+          },
+          pinch: {
+            enabled: true, // Enable zoom via pinch (touchscreen)
+          },
+          mode: "x", // Zoom only in X direction
+        },
+        limits: {
+          x: { min: 1, max: totalCycles }, // Prevent zooming outside cycle range
         },
       },
     },
     scales: {
       x: {
+        type: isLogarithmic ? "logarithmic" : "linear", // Toggle between logarithmic and linear
         title: {
           display: true,
-          text: 'Time/Cycles',
+          text: `Cycles (${isLogarithmic ? "Logarithmic" : "Linear"} Scale)`,
+        },
+        ticks: {
+          callback: (value) => value.toLocaleString(), // Format tick labels
         },
       },
       y: {
         title: {
           display: true,
-          text: 'Battery Capacity (%)',
+          text: "Battery Capacity (%)",
         },
+        min: 80, // Set Y-axis minimum to 80%
+        max: 100, // Set Y-axis maximum to 100%
       },
     },
+  };
+
+  // Toggle handler
+  const toggleAxisType = () => {
+    setIsLogarithmic((prev) => !prev);
   };
 
   return (
     <Container>
       <Box mt={4}>
         <Typography variant="h5" align="center" gutterBottom>
-          Battery Degradation Graph
+          Battery Degradation Graph with {isLogarithmic ? "Logarithmic" : "Linear"} X-Axis
         </Typography>
+        <Box display="flex" justifyContent="center" mb={2}>
+          <Button variant="contained" color="primary" onClick={toggleAxisType}>
+            Switch to {isLogarithmic ? "Linear" : "Logarithmic"} Scale
+          </Button>
+        </Box>
         <Line data={data} options={options} />
       </Box>
     </Container>

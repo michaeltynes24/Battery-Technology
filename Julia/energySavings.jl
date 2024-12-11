@@ -47,15 +47,15 @@ function process_savings_data()
 
     # Define winter and summer rates
     winter_rates = Dict(
-        "Super Off-Peak" => 0.31042,
-        "Off-Peak" => 0.36749,
-        "On-Peak" => 0.41406
+        "Super Off-Peak" => 0.47617,
+        "Off-Peak" =>  0.49353,
+        "On-Peak" =>  0.55334
     )
 
     summer_rates = Dict(
-        "Super Off-Peak" => 0.31649,
-        "Off-Peak" => 0.39199,
-        "On-Peak" => 0.63673
+        "Super Off-Peak" => 0.42756,
+        "Off-Peak" => 0.50170,
+        "On-Peak" => 0.57010
     )
 
     # Define average daily electricity usage for a California household

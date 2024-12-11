@@ -11,27 +11,27 @@ import Steven from '../../../files/Steven.png'
 const teamMembers = [
   {
     name: 'Alex Rivera (Team Leader)',
-    bio: "Escondido CA, San Diego State University - Computer Engineering, After graudation Alex will be working at LPL Financial as a Change Management Engineer",
+    bio: "Escondido CA, San Diego State University - Computer Engineering, Backend Development Team, After graduation Alex will be working at LPL Financial as a Change Management Engineer.",
     image: Alex,
   },
   {
     name: 'Michael Tynes',
-    bio: "Denver CO, San Diego State University - Computer Engineering Front/Backend development team After graduation Michael will continue as an Aviation Electronics Technician before upgrading into an engineering role.",
+    bio: "Denver CO, San Diego State University - Computer Engineering Front/Backend Development Team After graduation Michael will continue as an Aviation Electronics Technician before upgrading into an engineering role.",
     image: Michael
     },
   {
     name: 'Steven Busse',
-    bio: " Glendora CA, San Diego State University - Computer Engineering, After graduation Steven will be continuing his job at Renewable Energy Solutions as a Renewable Applications Engineer",
+    bio: " Glendora CA, San Diego State University - Computer Engineering, Backend Development Team After graduation Steven will be continuing his job at Renewable Energy Solutions as a Renewable Applications Engineer.",
     image: Steven,
   },
   {
     name: 'Maria Dawood',
-    bio: "San Diego CA, San Diego State University - Electrical Engineering, After graduation Maria will be continuing to work at Helix Electric as a Project Engineer",
+    bio: "San Diego CA, San Diego State University - Electrical Engineering, Backend Development Team, After graduation Maria will be continuing to work at Helix Electric as a Project Engineer",
     image: Maria,
   },
   {
     name: 'Vishal Kipadia',
-    bio: "San Diego CA, San Diego State University - Computer Engineering, After graduation Vishal will continue his education to a masters degree in Computer Engineering",
+    bio: "San Diego CA, San Diego State University - Computer Engineering, Frontend Development Team, After graduation Vishal will continue his education to a masters degree in Computer Engineering",
     image: Vishal,
   },
 ];
